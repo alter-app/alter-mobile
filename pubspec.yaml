@@ -24,11 +24,11 @@ dependencies:
   riverpod: ^2.6.1
   # networking
   dio: ^5.8.0+1
-  # enviroment configuration
-  envied: ^1.1.1
   # model serialization
   freezed_annotation: ^3.0.0
   json_annotation: ^4.9.0
+  # enviroment configuration
+  envied: ^1.1.1
 
 dev_dependencies:
   flutter_test:
@@ -39,6 +39,8 @@ dev_dependencies:
   build_runner: ^2.4.15
   freezed: ^3.0.6
   json_serializable: ^6.9.4
+  # envied code gneneration
+  envied_generator: ^1.1.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
