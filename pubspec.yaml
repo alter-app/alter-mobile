@@ -31,6 +31,11 @@ dependencies:
   envied: ^1.1.1
   # widget
   gap: ^3.0.1
+  # social login
+  kakao_flutter_sdk_user: ^1.9.7+3
+  sign_in_with_apple: ^7.0.1
+  # storage
+  flutter_secure_storage: ^9.2.4
 
 dev_dependencies:
   flutter_test:

@@ -42,3 +42,17 @@ android {
 flutter {
     source = "../.."
 }
+
+// .env 파일 경로 설정
+val dotenv = Properties()
+val envFile = file("${rootProject.projectDir}/.env")
+if (envFile.exists()) {
+    envFile.inputStream().use { stream -> dotenv.load(stream) }
+} else {
+    throw FileNotFoundException(".env file not found at ${envFile.absolutePath}")
+}
+// manifestPaceholder 설정
+val kakaoAppKey = dotenv.getProperty("KAKAO_APP_KEY")
+    ?: throw GradleException("KAKAO_APP_KEY not found in .env file. Ensure the .env file contains 'KAKAO_APP_KEY=your_key'.")
+
+manifestPlaceholders = mapOf("KAKAO_APP_KEY" to kakaoAppKey)
