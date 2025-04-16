@@ -29,6 +29,8 @@ dependencies:
   json_annotation: ^4.9.0
   # enviroment configuration
   envied: ^1.1.1
+  # widget
+  gap: ^3.0.1
 
 dev_dependencies:
   flutter_test:
