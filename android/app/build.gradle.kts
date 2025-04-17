@@ -5,18 +5,35 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// .env 파일 읽기
+import java.util.Properties
+import java.io.FileNotFoundException
+
+// .env 파일 경로 설정
+val dotenv = Properties()
+val envFile = file("${rootProject.projectDir}/../.env")
+if (envFile.exists()) {
+    envFile.inputStream().use { stream -> dotenv.load(stream) }
+} else {
+    throw FileNotFoundException(".env file not found at ${envFile.absolutePath}")
+}
+
+// KAKAO_APP_KEY 설정
+val kakaoAppKey: String = dotenv.getProperty("KAKAO_NATIVE_APP_KEY")
+    ?: throw GradleException("KAKAO_NATIVE_APP_KEY not found in .env file. Ensure the .env file contains 'KAKAO_APP_KEY=your_key'.")
+
 android {
-    namespace = "dreamteam.alter"
+    namespace = "com.dreamteam.alter"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     defaultConfig {
@@ -28,6 +45,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders["KAKAO_APP_KEY"] = kakaoAppKey
     }
 
     buildTypes {
@@ -42,17 +60,3 @@ android {
 flutter {
     source = "../.."
 }
-
-// .env 파일 경로 설정
-val dotenv = Properties()
-val envFile = file("${rootProject.projectDir}/.env")
-if (envFile.exists()) {
-    envFile.inputStream().use { stream -> dotenv.load(stream) }
-} else {
-    throw FileNotFoundException(".env file not found at ${envFile.absolutePath}")
-}
-// manifestPaceholder 설정
-val kakaoAppKey = dotenv.getProperty("KAKAO_APP_KEY")
-    ?: throw GradleException("KAKAO_APP_KEY not found in .env file. Ensure the .env file contains 'KAKAO_APP_KEY=your_key'.")
-
-manifestPlaceholders = mapOf("KAKAO_APP_KEY" to kakaoAppKey)
