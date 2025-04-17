@@ -4,7 +4,7 @@ class AppTheme {
   static ThemeData lightTheme = ThemeData(
     fontFamily: 'Pretendard',
     primaryColor: AppColor.primary,
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       backgroundColor: AppColor.white,
       foregroundColor: AppColor.text,
     ),
