@@ -1,3 +1,4 @@
+import 'package:alter/common/theme/app_theme.dart';
 import 'package:alter/core/env.dart';
 import 'package:alter/core/router.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(routerConfig: router);
+    return MaterialApp.router(
+      title: "wabiz",
+      theme: AppTheme.lightTheme,
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.light,
+      routerConfig: router,
+    );
   }
 }
