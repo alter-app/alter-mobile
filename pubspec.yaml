@@ -36,6 +36,8 @@ dependencies:
   sign_in_with_apple: ^7.0.1
   # storage
   flutter_secure_storage: ^9.2.4
+  # rest api
+  retrofit: ^4.4.2
 
 dev_dependencies:
   flutter_test:
@@ -50,6 +52,7 @@ dev_dependencies:
   envied_generator: ^1.1.1
   custom_lint: ^0.7.5
   riverpod_lint: ^2.6.5
+  retrofit_generator: ^9.1.9
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
