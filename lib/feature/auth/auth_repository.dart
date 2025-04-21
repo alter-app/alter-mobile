@@ -1,12 +1,59 @@
 import 'package:alter/common/util/logger.dart';
+import 'package:alter/core/result.dart';
+import 'package:alter/feature/auth/model/login_request_model.dart';
+import 'package:alter/feature/auth/model/login_response_model.dart';
+import 'package:alter/feature/auth/service/auth_api.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
-class AuthRepository {
-  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+final authRepositoryProvider = Provider(
+  (ref) => AuthRepository(ref.watch(authApiProvider)),
+);
 
-  Future<bool> loginWithKakao() async {
+class AuthRepository {
+  final AuthApiClient authApi;
+
+  AuthRepository(this.authApi);
+
+  Future<Result<LoginResponse>> kakaoLogin() async {
+    final kakaoToken = await _kakaoLoginAuthenticate();
+    if (kakaoToken == null) {
+      return Result.failure(Exception("로그인 실패"));
+    }
+    final accessToken = kakaoToken.accessToken;
+    try {
+      final response = await authApi.login(
+        LoginRequest(
+          provider: "KAKAO",
+          accessToken: accessToken,
+          authorizationCode: "",
+        ),
+      );
+      final status = response.response.statusCode;
+      final apiResponse = response.data;
+      Log.d("[$status] response: $apiResponse");
+
+      return Result.success(apiResponse);
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.badResponse) {
+        final status = e.response?.statusCode;
+        final errorResponse = e.response?.data;
+        Log.e("[$status] error: $errorResponse");
+
+        return Result.process(e);
+      } else {
+        // TODO 연결 시간 초과 등 다른 오류 추후 커스텀 예외 처리 필요
+        return Result.failure(Exception("Kakao login API failed"));
+      }
+    } catch (e) {
+      Log.e("Kakao login API failed: $e");
+      return Result.failure(Exception("Kakao login API failed"));
+    }
+  }
+
+  Future<OAuthToken?> _kakaoLoginAuthenticate() async {
     OAuthToken oAuthToken;
     // 카카오톡 실행 가능 여부 확인
     if (await isKakaoTalkInstalled()) {
@@ -19,7 +66,7 @@ class AuthRepository {
         Log.w("kakaoTalk login failed: $e");
         if (e is PlatformException && e.code == "CANCELED") {
           // 로그인 취소
-          return false;
+          return null;
         }
         // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인
         try {
@@ -30,7 +77,7 @@ class AuthRepository {
         } catch (e) {
           Log.e("kakaoAccount login failed: $e");
           // 로그인 실패
-          return false;
+          return null;
         }
       }
     } else {
@@ -43,17 +90,10 @@ class AuthRepository {
       } catch (e) {
         Log.e("kakaoAccount login failed: $e");
         // 로그인 실패
-        return false;
+        return null;
       }
     }
-    await _storage.write(
-      key: "kakao_access_token",
-      value: oAuthToken.accessToken,
-    );
-    return true;
-  }
 
-  Future<String?> getAccessToken() async {
-    return await _storage.read(key: 'kakao_access_token');
+    return oAuthToken;
   }
 }
