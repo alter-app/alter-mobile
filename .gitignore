@@ -51,3 +51,10 @@ app.*.map.json
 
 # api keys and secrets
 .env*
+
+# firebase config
+firebase.json
+lib/firebase_options.dart
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+.runtimeconfig.json
