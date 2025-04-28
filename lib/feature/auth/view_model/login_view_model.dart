@@ -1,16 +1,15 @@
 import 'package:alter/common/util/logger.dart';
 import 'package:alter/core/result.dart';
-import 'package:alter/feature/auth/auth_repository.dart';
+import 'package:alter/feature/auth/repository/auth_repository.dart';
 import 'package:alter/feature/auth/model/login_response_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'login_view_model.freezed.dart';
 
-final loginViewModelProvider =
-    StateNotifierProvider<LoginViewModel, LoginState>((ref) {
-      return LoginViewModel(ref.watch(authRepositoryProvider));
-    });
+final loginViewModelProvider = NotifierProvider<LoginViewModel, LoginState>(
+  () => LoginViewModel(),
+);
 
 @freezed
 class LoginState with _$LoginState {
@@ -23,10 +22,13 @@ class LoginState with _$LoginState {
   const factory LoginState.fail(String message) = LoginFail;
 }
 
-class LoginViewModel extends StateNotifier<LoginState> {
-  final AuthRepository _repository;
+class LoginViewModel extends Notifier<LoginState> {
+  AuthRepository get _repository => ref.watch(authRepositoryProvider);
 
-  LoginViewModel(this._repository) : super(const LoginState.initial());
+  @override
+  LoginState build() {
+    return const LoginState.initial();
+  }
 
   Future<void> loginWithKakao() async {
     state = const LoginState.loading();
