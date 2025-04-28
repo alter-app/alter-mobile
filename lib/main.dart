@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: "wabiz",
+      title: "ALTER",
       theme: AppTheme.lightTheme,
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.light,
