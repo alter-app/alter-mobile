@@ -1,9 +1,20 @@
 import 'package:alter/common/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
+enum Gender {
+  male('GENDER_MALE', '남'),
+  female('GENDER_FEMALE', '여');
+
+  final String code;
+  final String displayName;
+
+  const Gender(this.code, this.displayName);
+}
+
 class CustomRadio extends StatefulWidget {
   final List<RadioModel> radioItems;
-  const CustomRadio({super.key, required this.radioItems});
+  final ValueChanged<String>? onSelected;
+  const CustomRadio({super.key, required this.radioItems, this.onSelected});
 
   @override
   State<CustomRadio> createState() => _CustomRadioState();
@@ -30,6 +41,7 @@ class _CustomRadioState extends State<CustomRadio> {
                   }
                   item.isSelected = true;
                 });
+                widget.onSelected?.call(item.value);
               },
               child: RadioItem(
                 item: item,
@@ -84,6 +96,11 @@ class RadioItem extends StatelessWidget {
 class RadioModel {
   bool isSelected;
   final String buttonText;
+  final String value;
 
-  RadioModel({required this.isSelected, required this.buttonText});
+  RadioModel({
+    required this.isSelected,
+    required this.buttonText,
+    required this.value,
+  });
 }
