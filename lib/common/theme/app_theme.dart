@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   static ThemeData lightTheme = ThemeData(
+    textSelectionTheme: const TextSelectionThemeData(
+      cursorColor: Color(0xFF007AFF),
+    ),
     scaffoldBackgroundColor: AppColor.white,
     fontFamily: 'Pretendard',
     textTheme: _textTheme,
@@ -16,8 +19,10 @@ class AppTheme {
           borderRadius: BorderRadius.circular(8),
           side: BorderSide.none,
         ),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
         foregroundColor: AppColor.white,
         backgroundColor: AppColor.primary,
+        disabledBackgroundColor: AppColor.gray[30]!,
         textStyle: _textTheme.bodyMedium,
       ),
     ),
@@ -33,7 +38,20 @@ class AppTheme {
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: AppColor.gray[10]!,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      helperStyle: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        color: AppColor.gray[40],
+        height: 1.5,
+        letterSpacing: -1.0,
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      errorStyle: const TextStyle(
+        color: AppColor.warning,
+        fontSize: 12,
+        height: 1.5,
+        letterSpacing: -1.0,
+      ),
       // 기본 입력폼
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
@@ -46,7 +64,12 @@ class AppTheme {
       ),
       // 포커스 폼
       focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-      hintStyle: TextStyle(color: AppColor.gray[40], fontSize: 16),
+      hintStyle: TextStyle(
+        color: AppColor.gray[40],
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        height: 1.5,
+      ),
     ),
   );
 
@@ -55,36 +78,36 @@ class AppTheme {
     titleLarge: TextStyle(
       fontSize: 28,
       fontWeight: FontWeight.w700,
-      height: 1.4,
+      height: 1.5,
       letterSpacing: -1.0,
     ),
     // Title 2
     titleMedium: TextStyle(
       fontSize: 24,
       fontWeight: FontWeight.w700,
-      height: 1.4,
+      height: 1.5,
       letterSpacing: -1.0,
     ),
     // Sub Title 1
     displayLarge: TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.w700,
-      height: 1.4,
+      height: 1.5,
       letterSpacing: -1.0,
     ),
     // Sub Title 2
     displayMedium: TextStyle(
       fontSize: 18,
       fontWeight: FontWeight.w600,
-      height: 1.4,
+      height: 1.5,
       letterSpacing: -1.0,
     ),
     // Body 1
-    bodyLarge: TextStyle(fontSize: 16, height: 1.4, letterSpacing: -1.0),
+    bodyLarge: TextStyle(fontSize: 16, height: 1.5, letterSpacing: -1.0),
     // Body 2
-    bodyMedium: TextStyle(fontSize: 14, height: 1.4, letterSpacing: -1.0),
+    bodyMedium: TextStyle(fontSize: 14, height: 1.5, letterSpacing: -1.0),
     // Body 3
-    bodySmall: TextStyle(fontSize: 12, height: 1.4, letterSpacing: -1.0),
+    bodySmall: TextStyle(fontSize: 12, height: 1.5, letterSpacing: -1.0),
   );
 }
 
@@ -95,6 +118,7 @@ class AppColor extends Color {
   static const Color text = Color(0xFF1F2823);
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
+  static const Color warning = Color(0xFFDC0000);
   static const int _grayPrimaryValue = 0xFF767676;
   static const MaterialColor gray =
       MaterialColor(_grayPrimaryValue, <int, Color>{
