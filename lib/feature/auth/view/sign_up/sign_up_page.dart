@@ -1,26 +1,70 @@
+import 'package:alter/common/theme/app_theme.dart';
+import 'package:alter/common/util/%08formater/phone_text_formatter.dart';
+import 'package:alter/common/util/validator.dart';
+import 'package:alter/feature/auth/view_model/sign_up_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
-class SignUpPage extends StatefulWidget {
+class SignUpPage extends ConsumerStatefulWidget {
   const SignUpPage({super.key});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _SignUpPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
-  TextEditingController phoneTextController = TextEditingController();
-  TextEditingController phoneAuthCodeTextController = TextEditingController();
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+class _SignUpPageState extends ConsumerState<SignUpPage> {
+  final TextEditingController phoneTextController = TextEditingController();
+  final TextEditingController phoneAuthCodeTextController =
+      TextEditingController();
+  bool isPhoneValid = false;
+  bool isAuthCodeValid = false;
+
+  @override
+  void initState() {
+    super.initState();
+    phoneTextController.addListener(
+      () => setState(() {
+        isPhoneValid = Validator.validatePhoneNumber(phoneTextController.text);
+      }),
+    );
+    phoneAuthCodeTextController.addListener(validateAuthCode);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final signUpState = ref.watch(signUpViewModelProvider);
+    phoneTextController.text = signUpState.contact ?? "";
+  }
+
+  @override
+  void dispose() {
+    phoneTextController.dispose();
+    phoneAuthCodeTextController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final signUpState = ref.watch(signUpViewModelProvider);
+
+    ref.listen(signUpViewModelProvider, (previous, next) {
+      if (next.isPhoneAuthSuccess) {
+        final currentPath = GoRouter.of(context).state.path;
+        if (currentPath == "/sign-up") {
+          context.go("/sign-up/info");
+        }
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -39,67 +83,204 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                   const Gap(36),
-                  Form(
-                    key: formKey,
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: SizedBox(
-                                height: 50,
-                                child: TextFormField(
-                                  controller: phoneTextController,
-                                  decoration: const InputDecoration(
-                                    hintText: "전화번호 11자리",
+                  Column(
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: SizedBox(
+                              height: 64,
+                              child: TextFormField(
+                                controller: phoneTextController,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  PhoneNumberFormatter(), // 하이픈 포맷팅
+                                ],
+                                decoration: InputDecoration(
+                                  hintText: "전화번호 11자리",
+                                  counterText: "",
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: BorderSide(
+                                      color:
+                                          phoneTextController.text.isEmpty
+                                              ? AppColor.gray[10]!
+                                              : (isPhoneValid
+                                                  ? AppColor.gray[10]!
+                                                  : AppColor.warning),
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                ),
+                                keyboardType: TextInputType.phone,
+                                maxLength: 13, // 13자리 제한
+                              ),
+                            ),
+                          ),
+                          const Gap(8),
+                          Expanded(
+                            flex: 1,
+                            child: SizedBox(
+                              height: 56,
+                              child: ElevatedButton(
+                                onPressed:
+                                    isPhoneValid
+                                        ? () {
+                                          ref
+                                              .read(
+                                                signUpViewModelProvider
+                                                    .notifier,
+                                              )
+                                              .updateField(
+                                                contact:
+                                                    phoneTextController.text
+                                                        .trim(),
+                                              );
+                                          ref
+                                              .read(
+                                                signUpViewModelProvider
+                                                    .notifier,
+                                              )
+                                              .verifyPhoneNumber();
+                                        }
+                                        : null,
+                                child: Text(
+                                  "인증번호 발송",
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodyLarge!.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColor.white,
                                   ),
                                 ),
                               ),
                             ),
-                            const Gap(8),
-                            Expanded(
-                              flex: 1,
-                              child: SizedBox(
-                                height: 50,
-                                child: ElevatedButton(
-                                  onPressed: () {},
-                                  child: const Text("인증번호 발송"),
+                          ),
+                        ],
+                      ),
+                      AnimatedOpacity(
+                        opacity: signUpState.isPhoneAuthSent ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 300),
+                        child: AnimatedSlide(
+                          offset:
+                              signUpState.isPhoneAuthSent
+                                  ? Offset.zero
+                                  : const Offset(0, 0.2),
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 56,
+                            child: TextFormField(
+                              controller: phoneAuthCodeTextController,
+                              decoration: InputDecoration(
+                                hintText: "인증번호 입력",
+                                counterText: "",
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(
+                                    color:
+                                        phoneAuthCodeTextController.text.isEmpty
+                                            ? AppColor.gray[10]!
+                                            : (isPhoneValid
+                                                ? AppColor.gray[10]!
+                                                : AppColor.warning),
+                                    width: 1.0,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const Gap(12),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 50,
-                          child: TextFormField(
-                            controller: phoneAuthCodeTextController,
-                            decoration: const InputDecoration(
-                              hintText: "인증번호 입력",
+                              keyboardType: TextInputType.number,
+                              maxLength: 6, // 6자리 제한
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "인증번호를 입력해 주세요.";
+                                }
+                                if (value.length != 6) {
+                                  return "인증번호는 6자리여야 합니다.";
+                                }
+                                return null;
+                              },
                             ),
                           ),
                         ),
+                      ),
+                      if (signUpState.errorMessage != null) ...[
+                        const Gap(8),
+                        Text(
+                          signUpState.errorMessage!,
+                          style: const TextStyle(
+                            color: Colors.red,
+                            fontSize: 12,
+                          ),
+                        ),
                       ],
-                    ),
+                    ],
                   ),
                 ],
               ),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () {
-                    context.go('/sign-up/info');
-                  },
-                  child: const Text("인증 확인"),
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "인증 확인이 안눌린다면 번호를 다시 확인 해 주세요.",
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      fontWeight: FontWeight.w400,
+                      color: AppColor.gray,
+                    ),
+                  ),
+                  const Gap(4),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed:
+                          (isAuthCodeValid && isPhoneValid)
+                              ? () {
+                                final vm = ref.read(
+                                  signUpViewModelProvider.notifier,
+                                );
+                                vm.updateField(
+                                  errorMessage: null,
+                                  code: phoneAuthCodeTextController.text.trim(),
+                                );
+                                vm.signInWithCode();
+                                //context.push('/sign-up/info');
+                              }
+                              : null,
+                      child: Text(
+                        "인증 확인",
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          color: AppColor.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void validatePhoneNumber() {
+    final phone = phoneTextController.text.trim();
+    final phoneRegex = RegExp(r'^010-[0-9]{4}-[0-9]{4}$');
+
+    setState(() {
+      isPhoneValid = phoneRegex.hasMatch(phone);
+    });
+  }
+
+  void validateAuthCode() {
+    final code = phoneAuthCodeTextController.text.trim();
+
+    setState(() {
+      isAuthCodeValid = code.length == 6 && int.tryParse(code) != null;
+    });
   }
 }
