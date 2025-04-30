@@ -1,6 +1,7 @@
 import 'package:alter/common/theme/app_theme.dart';
 import 'package:alter/core/env.dart';
 import 'package:alter/core/router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
@@ -11,6 +12,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  FirebaseAuth.instance.setLanguageCode('ko');
 
   // Initialize Kakao SDK
   KakaoSdk.init(nativeAppKey: Env.kakaoAppKey);

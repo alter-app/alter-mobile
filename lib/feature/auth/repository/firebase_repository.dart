@@ -44,7 +44,8 @@ class FirebaseRepository {
         verificationId: verificationId,
         smsCode: code,
       );
-      await _auth.signInWithCredential(credential);
+      final user = await _auth.signInWithCredential(credential);
+      Log.d("user : ${user.credential.toString()}");
       return const Result.success("인증 성공");
     } catch (e) {
       return Result.failure(e as Exception);
