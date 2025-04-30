@@ -37,6 +37,7 @@ class CustomInterceptor extends Interceptor {
     // options.headers.addAll({'Authorization': 'Bearer $token'});
 
     Log.d("REQUEST[${options.method}] => PATH: ${options.path}");
+    Log.d("BODY: ${options.data}");
     super.onRequest(options, handler);
   }
 

@@ -2,6 +2,7 @@ import 'package:alter/common/util/logger.dart';
 import 'package:alter/core/result.dart';
 import 'package:alter/feature/auth/model/login_request_model.dart';
 import 'package:alter/feature/auth/model/login_response_model.dart';
+import 'package:alter/feature/auth/model/signup_request_model.dart';
 import 'package:alter/feature/auth/service/auth_api.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
@@ -95,5 +96,47 @@ class AuthRepository {
     }
 
     return oAuthToken;
+  }
+
+  Future<Result<bool>> checkNickname(String nickname) async {
+    try {
+      final response = await authApi.checkNickname(
+        NicknameCheckRequest(nickname: nickname),
+      );
+      final status = response.response.statusCode;
+      final data = response.data["data"];
+      final isDuplicated = data["duplicated"];
+      Log.d("[$status] isDuplicated: $isDuplicated");
+      return Result.success(isDuplicated);
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.badResponse) {
+        final status = e.response?.statusCode;
+        final errorResponse = e.response?.data;
+        Log.e("[$status] error: $errorResponse");
+        return Result.failure(e);
+      }
+      return Result.failure(e);
+    } catch (e) {
+      Log.e("Check nickname API failed: $e");
+      return Result.failure(e as Exception);
+    }
+  }
+
+  Future<Result<LoginResponse>> signUp(SignupRequest request) async {
+    try {
+      final response = await authApi.signup(request);
+      final data = response.data;
+      Log.d("sign up success: $data");
+      return Result.success(data);
+    } on DioException catch (e) {
+      final status = e.response?.statusCode;
+      final errorResponse = e.response?.data;
+      Log.e("[$status] error: $errorResponse");
+
+      return Result.process(e);
+    } catch (e) {
+      Log.e("Sign up failed : $e");
+      return Result.failure(Exception("회원가입 실패"));
+    }
   }
 }

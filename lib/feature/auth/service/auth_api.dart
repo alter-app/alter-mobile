@@ -1,6 +1,7 @@
 import 'package:alter/core/network_provider.dart';
 import 'package:alter/feature/auth/model/login_request_model.dart';
 import 'package:alter/feature/auth/model/login_response_model.dart';
+import 'package:alter/feature/auth/model/signup_request_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retrofit/retrofit.dart';
@@ -17,4 +18,10 @@ abstract class AuthApiClient {
 
   @POST("/public/users/login")
   Future<HttpResponse<LoginResponse>> login(@Body() LoginRequest body);
+
+  @POST("/public/users/exists/nickname")
+  Future<HttpResponse> checkNickname(@Body() NicknameCheckRequest body);
+
+  @POST("/public/users/signup")
+  Future<HttpResponse<LoginResponse>> signup(@Body() SignupRequest body);
 }
