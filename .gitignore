@@ -46,8 +46,9 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# ios info.plist
+# ios config
 /ios/Runner/Info.plist
+/ios/Develop.xcconfig
 
 # api keys and secrets
 .env*
