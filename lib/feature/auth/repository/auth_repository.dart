@@ -25,18 +25,18 @@ class AuthRepository {
     }
     final accessToken = kakaoToken.accessToken;
     try {
-      final response = await authApi.login(
+      final httpResponse = await authApi.login(
         LoginRequest(
           provider: "KAKAO",
           accessToken: accessToken,
           authorizationCode: "",
         ),
       );
-      final status = response.response.statusCode;
-      final apiResponse = response.data;
-      Log.d("[$status] response: $apiResponse");
+      final status = httpResponse.response.statusCode;
+      final response = httpResponse.data;
+      Log.d("[$status] response: $response");
 
-      return Result.success(apiResponse);
+      return Result.success(response.data);
     } on DioException catch (e) {
       if (e.type == DioExceptionType.badResponse) {
         final status = e.response?.statusCode;
@@ -124,10 +124,10 @@ class AuthRepository {
 
   Future<Result<LoginResponse>> signUp(SignupRequest request) async {
     try {
-      final response = await authApi.signup(request);
-      final data = response.data;
-      Log.d("sign up success: $data");
-      return Result.success(data);
+      final httpResponse = await authApi.signup(request);
+      final response = httpResponse.data;
+      Log.d("sign up success: $response");
+      return Result.success(response.data);
     } on DioException catch (e) {
       final status = e.response?.statusCode;
       final errorResponse = e.response?.data;

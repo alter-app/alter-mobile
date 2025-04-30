@@ -26,10 +26,11 @@ final router = GoRouter(
     ),
     // Firebase Auth
     GoRoute(path: '/link', redirect: (context, state) => '/sign-up'),
-    ShellRoute(
-      routes: [
-        GoRoute(path: '/home', builder: (context, state) => const HomePage()),
-      ],
-    ),
+    GoRoute(path: '/home', builder: (context, state) => const HomePage()),
+    // ShellRoute(
+    //   routes: [
+    //     GoRoute(path: '/home', builder: (context, state) => const HomePage()),
+    //   ],
+    // ),
   ],
 );

@@ -43,8 +43,8 @@ class LoginViewModel extends Notifier<LoginState> {
         state = LoginState.success(token);
       case Process(error: final error):
         final res = error.response!;
+        Log.d("처리 필요: ${res.data}");
         final data = LoginFailure.fromJson(res.data);
-        Log.d("처리 필요: $data");
         final code = data.code;
         if (code == "A003") {
           state = LoginState.signupRequired(data.data!);
