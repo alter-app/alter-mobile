@@ -17,7 +17,7 @@ class LoginPage extends ConsumerWidget {
     ref.listen<LoginState>(loginViewModelProvider, (previous, next) {
       switch (next) {
         case LoginSuccess(token: final token):
-          Log.i("State: Login Success");
+          Log.i("State: Login Success : ${token.toString()}");
           context.go("/home");
           break;
         case LoginSignupRequired(data: final data):

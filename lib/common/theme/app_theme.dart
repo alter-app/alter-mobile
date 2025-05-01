@@ -38,37 +38,52 @@ class AppTheme {
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: AppColor.gray[10]!,
-      helperStyle: TextStyle(
-        fontSize: 16,
+      helperStyle: const TextStyle(
+        color: AppColor.primary,
         fontWeight: FontWeight.w500,
-        color: AppColor.gray[40],
-        height: 1.5,
-        letterSpacing: -1.0,
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      errorStyle: const TextStyle(
-        color: AppColor.warning,
         fontSize: 12,
         height: 1.5,
         letterSpacing: -1.0,
       ),
-      // 기본 입력폼
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide.none,
-      ),
-      // 입력 가능 폼
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColor.gray[10]!, width: 1.0),
-      ),
-      // 포커스 폼
-      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
       hintStyle: TextStyle(
         color: AppColor.gray[40],
         fontSize: 16,
         fontWeight: FontWeight.w500,
         height: 1.5,
+      ),
+      errorStyle: const TextStyle(
+        color: AppColor.warning,
+        fontWeight: FontWeight.w500,
+        fontSize: 12,
+        height: 1.5,
+        letterSpacing: -1.0,
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      // 기본 입력폼
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(
+          color: WidgetStateColor.fromMap({
+            WidgetState.error: AppColor.warning,
+            WidgetState.focused: Colors.blue,
+            WidgetState.any: AppColor.primary,
+          }),
+        ),
+      ),
+      // 입력 가능 폼
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: AppColor.gray[10]!, width: 0.5),
+      ),
+      // 포커스 폼
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: AppColor.gray[40]!),
+      ),
+      // 에러 폼
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: AppColor.warning, width: 0.5),
       ),
     ),
   );

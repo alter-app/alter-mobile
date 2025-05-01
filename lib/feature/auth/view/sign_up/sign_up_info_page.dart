@@ -152,6 +152,7 @@ class _SignUpInfoPageState extends ConsumerState<SignUpInfoPage> {
                         height: 56,
                         child: TextFormField(
                           controller: phoneTextController,
+                          readOnly: true,
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,
                             PhoneNumberFormatter(),
@@ -175,7 +176,7 @@ class _SignUpInfoPageState extends ConsumerState<SignUpInfoPage> {
                             BirthDayFormatter(),
                           ],
                           decoration: const InputDecoration(
-                            hintText: "19910101 ",
+                            hintText: "1991-01-01 ",
                           ),
                         ),
                       ),
@@ -195,11 +196,7 @@ class _SignUpInfoPageState extends ConsumerState<SignUpInfoPage> {
                                 .updateField(
                                   name: nameTextController.text.trim(),
                                   contact: phoneTextController.text.trim(),
-                                  birthday:
-                                      birthDayTextController.text
-                                          .split("-")
-                                          .join("")
-                                          .trim(),
+                                  birthday: birthDayTextController.text.trim(),
                                 );
                             context.go('/sign-up/last');
                           }
