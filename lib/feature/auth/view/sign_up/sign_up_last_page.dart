@@ -13,22 +13,33 @@ class SignUpLastPage extends ConsumerStatefulWidget {
 }
 
 class _SignUpLastPageState extends ConsumerState<SignUpLastPage> {
-  final TextEditingController nicknameTextController = TextEditingController();
-  bool isNicknameValid = false;
+  late final TextEditingController nicknameTextController;
 
   @override
   void initState() {
     super.initState();
+    nicknameTextController = TextEditingController();
     nicknameTextController.addListener(() {
-      setState(() {
-        isNicknameValid = nicknameTextController.text.isNotEmpty;
-      });
+      final currentText = nicknameTextController.text;
+      if (currentText != ref.read(signUpViewModelProvider).nickname) {
+        ref.read(signUpViewModelProvider.notifier).resetNickname();
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    nicknameTextController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final signUpState = ref.watch(signUpViewModelProvider);
+    final isInputValid =
+        nicknameTextController.text.isNotEmpty &&
+        nicknameTextController.text.length >= 2 &&
+        nicknameTextController.text.length <= 32;
 
     ref.listen(loginViewModelProvider, (previous, next) {
       if (next is LoginSuccess) {
@@ -65,16 +76,22 @@ class _SignUpLastPageState extends ConsumerState<SignUpLastPage> {
                   Column(
                     children: [
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             flex: 3,
                             child: SizedBox(
-                              height: 50,
+                              height: 78,
                               child: TextFormField(
                                 controller: nicknameTextController,
-                                decoration: const InputDecoration(
-                                  hintText: "이름을 입력해 주세요.",
+                                decoration: InputDecoration(
+                                  hintText: "닉네임을 입력해 주세요.",
+                                  counterText: "",
+                                  errorText: signUpState.errorMessage,
+                                  helperText: signUpState.successMessage,
                                 ),
+                                maxLength: 32,
+                                onChanged: (value) {},
                               ),
                             ),
                           ),
@@ -82,10 +99,10 @@ class _SignUpLastPageState extends ConsumerState<SignUpLastPage> {
                           Expanded(
                             flex: 1,
                             child: SizedBox(
-                              height: 50,
+                              height: 56,
                               child: ElevatedButton(
                                 onPressed:
-                                    isNicknameValid
+                                    isInputValid
                                         ? () {
                                           final nickname =
                                               nicknameTextController.text;
@@ -103,7 +120,6 @@ class _SignUpLastPageState extends ConsumerState<SignUpLastPage> {
                           ),
                         ],
                       ),
-                      const Gap(12),
                     ],
                   ),
                 ],
@@ -113,12 +129,17 @@ class _SignUpLastPageState extends ConsumerState<SignUpLastPage> {
                 height: 56,
                 child: ElevatedButton(
                   onPressed:
-                      signUpState.nickname != null && isNicknameValid
+                      signUpState.isNicknameDuplicated == false
                           ? () async {
-                            final result =
-                                await ref
-                                    .read(signUpViewModelProvider.notifier)
-                                    .signUp();
+                            await ref
+                                .read(signUpViewModelProvider.notifier)
+                                .signUp();
+                            final loginState = ref.read(loginViewModelProvider);
+                            if (loginState is LoginSuccess) {
+                              if (context.mounted) {
+                                context.go('/home');
+                              }
+                            }
                           }
                           : null,
                   child: const Text(

@@ -26,6 +26,9 @@ abstract class SignupState with _$SignupState {
     required bool isPhoneAuthSuccess,
     String? verificationId,
     String? code,
+    // validation
+    bool? isNicknameDuplicated,
+    String? successMessage,
     String? errorMessage,
   }) = _SignupState;
 }
@@ -66,7 +69,8 @@ class SignUpViewModel extends Notifier<SignupState> {
     String? birthday,
     String? code,
     String? errorMessage,
-    bool? isPhoneAuthSuccess,
+    String? successMessage,
+    bool? isNicknameValid,
   }) {
     state = state.copyWith(
       name: name ?? state.name,
@@ -75,7 +79,8 @@ class SignUpViewModel extends Notifier<SignupState> {
       gender: gender ?? state.gender,
       birthday: birthday ?? state.birthday,
       code: code ?? state.code,
-      isPhoneAuthSuccess: isPhoneAuthSuccess ?? state.isPhoneAuthSuccess,
+      errorMessage: errorMessage ?? state.errorMessage,
+      successMessage: successMessage ?? state.successMessage,
     );
     Log.i("state : ${state.toString()}");
   }
@@ -124,21 +129,44 @@ class SignUpViewModel extends Notifier<SignupState> {
   }
 
   Future<bool> checkNickname(String nickname) async {
+    resetNickname();
     final result = await _authRepository.checkNickname(nickname);
 
     switch (result) {
       case Success(data: final isDuplicated):
         if (isDuplicated) {
-          state = state.copyWith(errorMessage: "중복된 닉네임입니다.");
+          state = state.copyWith(
+            isNicknameDuplicated: true,
+            errorMessage: "중복된 닉네임입니다.",
+            successMessage: null,
+          );
           return false;
         } else {
-          state = state.copyWith(nickname: nickname);
+          state = state.copyWith(
+            nickname: nickname,
+            isNicknameDuplicated: false,
+            successMessage: "사용 가능한 닉네임입니다",
+            errorMessage: null,
+          );
           return true;
         }
       default:
-        state = state.copyWith(errorMessage: "알 수 없는 오류. 다시 시도해 주세요.");
+        state = state.copyWith(
+          isNicknameDuplicated: true,
+          errorMessage: "알 수 없는 오류. 다시 시도해 주세요.",
+          successMessage: null,
+        );
         return false;
     }
+  }
+
+  void resetNickname() {
+    state = state.copyWith(
+      nickname: null,
+      isNicknameDuplicated: null,
+      errorMessage: null,
+      successMessage: null,
+    );
   }
 
   Future<void> signUp() async {
@@ -149,7 +177,7 @@ class SignUpViewModel extends Notifier<SignupState> {
         nickname: state.nickname!,
         contact: state.contact!,
         gender: state.gender!,
-        birthday: state.birthday!,
+        birthday: state.birthday!.split("-").join(""),
       ),
     );
     final loginViewModel = ref.read(loginViewModelProvider.notifier);

@@ -16,18 +16,23 @@ class SignUpPage extends ConsumerStatefulWidget {
 }
 
 class _SignUpPageState extends ConsumerState<SignUpPage> {
-  final TextEditingController phoneTextController = TextEditingController();
-  final TextEditingController phoneAuthCodeTextController =
-      TextEditingController();
+  late final TextEditingController phoneTextController;
+  late final TextEditingController phoneAuthCodeTextController;
   bool isPhoneValid = false;
   bool isAuthCodeValid = false;
 
   @override
   void initState() {
     super.initState();
+    phoneTextController = TextEditingController();
+    phoneAuthCodeTextController = TextEditingController();
+
     phoneTextController.addListener(
       () => setState(() {
         isPhoneValid = Validator.validatePhoneNumber(phoneTextController.text);
+        if (!isPhoneValid) {
+          phoneAuthCodeTextController.clear();
+        }
       }),
     );
     phoneAuthCodeTextController.addListener(validateAuthCode);
@@ -161,11 +166,14 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                         ],
                       ),
                       AnimatedOpacity(
-                        opacity: signUpState.isPhoneAuthSent ? 1.0 : 0.0,
+                        opacity:
+                            signUpState.isPhoneAuthSent && isPhoneValid
+                                ? 1.0
+                                : 0.0,
                         duration: const Duration(milliseconds: 300),
                         child: AnimatedSlide(
                           offset:
-                              signUpState.isPhoneAuthSent
+                              signUpState.isPhoneAuthSent && isPhoneValid
                                   ? Offset.zero
                                   : const Offset(0, 0.2),
                           duration: const Duration(milliseconds: 300),
