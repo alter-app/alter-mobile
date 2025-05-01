@@ -1,3 +1,4 @@
+import 'package:alter/common/theme/app_theme.dart';
 import 'package:alter/common/util/%08formater/birth_input_formatter.dart';
 import 'package:alter/common/util/%08formater/phone_text_formatter.dart';
 import 'package:alter/common/util/validator.dart';
@@ -80,7 +81,7 @@ class _SignUpInfoPageState extends ConsumerState<SignUpInfoPage> {
                   ),
                   const Gap(10),
                   Text(
-                    "알터가 회원님이 동의 해 주신 내용을 바탕으로 작성했어요.\n틀리거나 빈 정보가 있다면 알려주시겠어요?",
+                    "알터가 회원님이 동의해 주신 내용을 바탕으로 작성했어요.\n틀리거나 빈 정보가 있다면 알려주시겠어요?",
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       fontWeight: FontWeight.w400,
                     ),
@@ -184,28 +185,41 @@ class _SignUpInfoPageState extends ConsumerState<SignUpInfoPage> {
                   ),
                 ],
               ),
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed:
-                      isNameValid && isPhoneValid && isBirthDayValid
-                          ? () {
-                            ref
-                                .read(signUpViewModelProvider.notifier)
-                                .updateField(
-                                  name: nameTextController.text.trim(),
-                                  contact: phoneTextController.text.trim(),
-                                  birthday: birthDayTextController.text.trim(),
-                                );
-                            context.go('/sign-up/last');
-                          }
-                          : null,
-                  child: const Text(
-                    "다 했어요!",
-                    style: TextStyle(fontWeight: FontWeight.w600),
+              Column(
+                children: [
+                  Text(
+                    "만약 내용이 없다면 모든 내용을 기입해 주세요!",
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      fontWeight: FontWeight.w400,
+                      color: AppColor.gray,
+                    ),
                   ),
-                ),
+                  const Gap(4),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed:
+                          isNameValid && isPhoneValid && isBirthDayValid
+                              ? () {
+                                ref
+                                    .read(signUpViewModelProvider.notifier)
+                                    .updateField(
+                                      name: nameTextController.text.trim(),
+                                      contact: phoneTextController.text.trim(),
+                                      birthday:
+                                          birthDayTextController.text.trim(),
+                                    );
+                                context.go('/sign-up/last');
+                              }
+                              : null,
+                      child: const Text(
+                        "다 했어요!",
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

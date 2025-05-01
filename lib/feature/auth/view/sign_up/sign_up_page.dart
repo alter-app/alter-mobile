@@ -82,7 +82,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                   ),
                   const Gap(10),
                   Text(
-                    "알터 회원가입을 위한 인증 번호를\n휴대폰 문자로 발송 해 드려요!",
+                    "알터 회원가입을 위한 인증 번호를\n휴대폰 문자로 발송해 드려요!",
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       fontWeight: FontWeight.w400,
                     ),
@@ -232,7 +232,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "인증 확인이 안눌린다면 번호를 다시 확인 해 주세요.",
+                    "인증 확인이 안 눌린다면 번호를 다시 확인해 주세요.",
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       fontWeight: FontWeight.w400,
                       color: AppColor.gray,

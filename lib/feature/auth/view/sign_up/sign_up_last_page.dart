@@ -1,3 +1,4 @@
+import 'package:alter/common/theme/app_theme.dart';
 import 'package:alter/feature/auth/view_model/login_view_model.dart';
 import 'package:alter/feature/auth/view_model/sign_up_view_model.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,8 @@ class SignUpLastPage extends ConsumerStatefulWidget {
 
 class _SignUpLastPageState extends ConsumerState<SignUpLastPage> {
   late final TextEditingController nicknameTextController;
+  bool isEssentialChecked = false;
+  bool isChecked = false;
 
   @override
   void initState() {
@@ -50,6 +53,11 @@ class _SignUpLastPageState extends ConsumerState<SignUpLastPage> {
       }
     });
 
+    final checkboxTheme = Theme.of(context).copyWith(
+      visualDensity: VisualDensity.compact,
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    );
+
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
@@ -67,7 +75,7 @@ class _SignUpLastPageState extends ConsumerState<SignUpLastPage> {
                   ),
                   const Gap(10),
                   Text(
-                    "회원님이 알터에서 불릴 닉네임을 알려주세요.\n그리고 필수 정보 제공에 동의 해 주시면 완료에요.",
+                    "회원님이 알터에서 불릴 닉네임을 알려주세요.\n그리고 필수 정보 제공에 동의해 주시면 완료에요.",
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       fontWeight: FontWeight.w400,
                     ),
@@ -124,29 +132,111 @@ class _SignUpLastPageState extends ConsumerState<SignUpLastPage> {
                   ),
                 ],
               ),
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed:
-                      signUpState.isNicknameDuplicated == false
-                          ? () async {
-                            await ref
-                                .read(signUpViewModelProvider.notifier)
-                                .signUp();
-                            final loginState = ref.read(loginViewModelProvider);
-                            if (loginState is LoginSuccess) {
-                              if (context.mounted) {
-                                context.go('/home');
-                              }
-                            }
-                          }
-                          : null,
-                  child: const Text(
-                    "다 했어요!",
-                    style: TextStyle(fontWeight: FontWeight.w600),
+              Column(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Theme(
+                              data: checkboxTheme,
+                              child: Checkbox(
+                                value: isEssentialChecked,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    isEssentialChecked = value!;
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Text.rich(
+                              TextSpan(
+                                children: [
+                                  const TextSpan(
+                                    text: "(필수) ",
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: "이용약관과 개인정보 보호정책 동의",
+                                    style: TextStyle(
+                                      color: AppColor.gray[50]!,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Theme(
+                              data: checkboxTheme,
+                              child: Checkbox(
+                                value: isChecked,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    isChecked = value!;
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              "(선택) 이메일 및 SMS 광고성 정보 수신 동의",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColor.gray[50]!,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ),
+
+                  const Gap(4),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed:
+                          signUpState.isNicknameDuplicated == false
+                              ? () async {
+                                await ref
+                                    .read(signUpViewModelProvider.notifier)
+                                    .signUp();
+                                final loginState = ref.read(
+                                  loginViewModelProvider,
+                                );
+                                if (loginState is LoginSuccess) {
+                                  if (context.mounted) {
+                                    context.go('/home');
+                                  }
+                                }
+                              }
+                              : null,
+                      child: const Text(
+                        "다 했어요!",
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
