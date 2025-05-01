@@ -70,7 +70,7 @@ class RadioItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50,
+      height: 56,
       decoration: BoxDecoration(
         color: item.isSelected ? AppColor.primary : AppColor.gray[10],
         borderRadius: BorderRadius.only(
