@@ -33,4 +33,12 @@ final router = GoRouter(
     //   ],
     // ),
   ],
+  redirect: (context, state) {
+    final uri = state.uri;
+
+    if (uri.scheme.contains('kakao') && uri.authority == 'oauth') {
+      return '/login';
+    }
+    return null;
+  },
 );
