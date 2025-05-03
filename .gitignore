@@ -33,6 +33,7 @@ migrate_working_dir/
 .pub/
 /build/
 *.g.dart
+*.freezed.dart
 
 # Symbolication related
 app.*.symbols
@@ -45,6 +46,16 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# ios config
+/ios/Runner/Info.plist
+/ios/Develop.xcconfig
 
 # api keys and secrets
 .env*
+
+# firebase config
+firebase.json
+lib/firebase_options.dart
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+.runtimeconfig.json
