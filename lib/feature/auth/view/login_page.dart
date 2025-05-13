@@ -2,8 +2,8 @@ import 'package:alter/common/util/logger.dart';
 import 'package:alter/feature/auth/view_model/login_view_model.dart';
 import 'package:alter/feature/auth/view_model/sign_up_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:alter/common/theme/app_theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
@@ -53,66 +53,39 @@ class LoginPage extends ConsumerWidget {
 
     return Scaffold(
       body: Stack(
+        fit: StackFit.expand,
         children: [
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "알터",
-                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset('assets/images/logo_with_text.svg'),
+                const Gap(10),
+                GestureDetector(
+                  onTap:
+                      isLoading
+                          ? null
+                          : () {
+                            ref
+                                .read(loginViewModelProvider.notifier)
+                                .loginWithKakao();
+                          },
+                  child: SvgPicture.asset(
+                    'assets/images/kakao_login.svg',
+                    height: 56,
                   ),
-                  const Gap(70),
-                  GestureDetector(
-                    onTap:
-                        isLoading
-                            ? null
-                            : () {
-                              ref
-                                  .read(loginViewModelProvider.notifier)
-                                  .loginWithKakao();
-                            },
-                    child: Container(
-                      width: double.infinity,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFEE500),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          "kakao 로그인",
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ),
+                ),
+                const Gap(8),
+                // 애플 로그인
+                GestureDetector(
+                  onTap: () {},
+                  child: SvgPicture.asset(
+                    "assets/images/apple_login.svg",
+                    height: 56,
                   ),
-                  const Gap(8),
-                  // 애플 로그인
-                  GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      width: double.infinity,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: AppColor.black,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          "애플 로그인",
-                          style: TextStyle(
-                            color: AppColor.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           if (isLoading)
