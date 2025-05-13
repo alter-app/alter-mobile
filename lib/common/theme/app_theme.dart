@@ -130,7 +130,8 @@ class AppColor extends Color {
   AppColor(super.value);
 
   static const Color primary = Color(0xFF2DE283);
-  static const Color text = Color(0xFF1F2823);
+  static const Color secondary = Color(0xFF399982);
+  static const Color text = Color(0xFF111111);
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
   static const Color warning = Color(0xFFDC0000);
