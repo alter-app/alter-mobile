@@ -12,6 +12,7 @@ class JobPostPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColor.gray[10],
       body: SafeArea(
+        bottom: false,
         child: SingleChildScrollView(
           child: Column(
             children: [
