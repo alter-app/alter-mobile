@@ -13,9 +13,51 @@ class SearchPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-              Container(color: AppColor.gray, height: 97),
-              const SingleChildScrollView(
-                child: Column(children: [JobPostCard()]),
+              Container(
+                color: AppColor.white,
+                height: 97,
+                child: Center(
+                  child: TextFormField(
+                    onTap: () {},
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: AppColor.gray[10],
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(
+                          width: 1.0,
+                          color: AppColor.gray[20]!,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 16,
+                      ),
+                      suffixIcon: Icon(
+                        Icons.search,
+                        size: 24,
+                        color: AppColor.gray[20],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                height: 66,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "서울 구로구 경인로 445",
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleMedium!.copyWith(height: 1.42),
+                ),
+              ),
+              const Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [JobPostCard(), JobPostCard(), JobPostCard()],
+                  ),
+                ),
               ),
             ],
           ),

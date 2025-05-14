@@ -3,11 +3,12 @@ import 'package:alter/feature/auth/view/sign_up/sign_up_info_page.dart';
 import 'package:alter/feature/auth/view/sign_up/sign_up_last_page.dart';
 import 'package:alter/feature/auth/view/sign_up/sign_up_page.dart';
 import 'package:alter/feature/home/view/home_page.dart';
+import 'package:alter/feature/home/view/job_post_page.dart';
 import 'package:alter/feature/home/view/search_page.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
-  initialLocation: '/search',
+  initialLocation: '/job',
   debugLogDiagnostics: true,
   routes: [
     GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
@@ -27,8 +28,10 @@ final router = GoRouter(
     ),
     // Firebase Auth
     GoRoute(path: '/link', redirect: (context, state) => '/sign-up'),
+    // page work
     GoRoute(path: '/home', builder: (context, state) => const HomePage()),
     GoRoute(path: '/search', builder: (context, state) => const SearchPage()),
+    GoRoute(path: '/job', builder: (context, state) => const JobPostPage()),
     // ShellRoute(
     //   routes: [
     //     GoRoute(
