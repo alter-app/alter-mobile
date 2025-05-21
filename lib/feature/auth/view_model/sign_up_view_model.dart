@@ -1,5 +1,6 @@
 import 'package:alter/common/util/logger.dart';
 import 'package:alter/core/result.dart';
+import 'package:alter/core/secure_storage_provider.dart';
 import 'package:alter/feature/auth/model/login_response_model.dart';
 import 'package:alter/feature/auth/model/signup_request_model.dart';
 import 'package:alter/feature/auth/repository/auth_repository.dart';
@@ -40,6 +41,7 @@ final signUpViewModelProvider = NotifierProvider<SignUpViewModel, SignupState>(
 class SignUpViewModel extends Notifier<SignupState> {
   FirebaseRepository get _firebase => ref.watch(firebaseRepositoryProvider);
   AuthRepository get _authRepository => ref.watch(authRepositoryProvider);
+  SecureStorage get _storage => ref.watch(secureStorageProvider);
 
   @override
   build() {
@@ -189,7 +191,12 @@ class SignUpViewModel extends Notifier<SignupState> {
           accessToken: data.accessToken,
           refreshToken: data.refreshToken,
         );
-        loginViewModel.state = LoginState.success(token);
+        _storage.saveToken(token.accessToken, token.refreshToken);
+        loginViewModel.state = LoginState(
+          status: LoginStatus.success,
+          token: token,
+        );
+        {}
       case Process(error: final error):
         final data = LoginFailure.fromJson(error.response!.data);
         final code = data.code;
@@ -199,7 +206,10 @@ class SignUpViewModel extends Notifier<SignupState> {
             state = state.copyWith(errorMessage: "");
         }
       default:
-        loginViewModel.state = const LoginState.fail('회원 가입 실패');
+        loginViewModel.state = const LoginState(
+          status: LoginStatus.fail,
+          message: "회원가입 실패",
+        );
     }
   }
 }

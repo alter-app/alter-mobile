@@ -45,7 +45,7 @@ class _SignUpLastPageState extends ConsumerState<SignUpLastPage> {
         nicknameTextController.text.length <= 32;
 
     ref.listen(loginViewModelProvider, (previous, next) {
-      if (next is LoginSuccess) {
+      if (next.status == LoginStatus.success) {
         final currentPath = GoRouter.of(context).state.path;
         if (currentPath == "/sign-up/last") {
           context.go("/home");
@@ -223,7 +223,7 @@ class _SignUpLastPageState extends ConsumerState<SignUpLastPage> {
                                 final loginState = ref.read(
                                   loginViewModelProvider,
                                 );
-                                if (loginState is LoginSuccess) {
+                                if (loginState.status == LoginStatus.success) {
                                   if (context.mounted) {
                                     context.go('/home');
                                   }

@@ -3,7 +3,6 @@ import 'package:alter/core/env.dart';
 import 'package:alter/core/secure_storage_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final dioProvider = Provider<Dio>((ref) {
   final options = BaseOptions(
@@ -21,7 +20,7 @@ final dioProvider = Provider<Dio>((ref) {
 });
 
 class CustomInterceptor extends Interceptor {
-  final FlutterSecureStorage storage;
+  final SecureStorage storage;
 
   CustomInterceptor({required this.storage});
 
