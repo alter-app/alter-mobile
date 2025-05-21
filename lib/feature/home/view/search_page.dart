@@ -1,5 +1,5 @@
 import 'package:alter/common/theme/app_theme.dart';
-import 'package:alter/feature/home/view/job_post_card.dart';
+import 'package:alter/feature/home/view/posting_card.dart';
 import 'package:flutter/material.dart';
 
 class SearchPage extends StatelessWidget {

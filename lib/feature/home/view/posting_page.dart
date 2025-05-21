@@ -1,11 +1,13 @@
 import 'package:alter/common/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:gap/gap.dart';
 
 class JobPostPage extends StatelessWidget {
   static const _daysOfWeek = ["월", "화", "수", "목", "금", "토", "일"];
   const JobPostPage({super.key});
-
+  // TODO: 상단에 근무 위치 내용이랑 화살표 조금 두꺼워진 것 같아요 전철 뱃지, 시급 뱃지 여백이 조금 다른 것 같아서요
+  // 아이콘 업데이트
   @override
   Widget build(BuildContext context) {
     final selectedDays = ["월", "화", "목"];
@@ -293,7 +295,18 @@ class JobPostPage extends StatelessWidget {
                         ),
                         const Gap(16),
                         //지도
-                        Container(color: AppColor.gray, height: 201),
+                        Container(
+                          color: AppColor.gray,
+                          height: 201,
+                          // child: const NaverMap(
+                          //   options: NaverMapViewOptions(
+                          //     initialCameraPosition: NCameraPosition(
+                          //       target: NLatLng(37.5665, 126.9780), // 서울 시청 좌표
+                          //       zoom: 14,
+                          //     ),
+                          //   ),
+                          // ),
+                        ),
                       ],
                     ),
                   ),
