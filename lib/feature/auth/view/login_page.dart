@@ -15,41 +15,40 @@ class LoginPage extends ConsumerWidget {
     final authState = ref.watch(loginViewModelProvider);
 
     ref.listen<LoginState>(loginViewModelProvider, (previous, next) {
-      switch (next) {
-        case LoginSuccess(token: final token):
-          Log.i("State: Login Success : ${token.toString()}");
+      switch (next.status) {
+        case LoginStatus.success:
           context.go("/home");
           break;
-        case LoginSignupRequired(data: final data):
+        case LoginStatus.signupRequired:
           Log.i("State: SignupRequired");
           ref
               .read(signUpViewModelProvider.notifier)
-              .initializeWithSignupData(data);
+              .initializeWithSignupData(next.signupData!);
           context.push('/sign-up');
           break;
-        case LoginTokenExpired():
+        case LoginStatus.tokenExpired:
           Log.i("State: TokenExpired");
           // TODO : 토스트 UI 개선
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('소셜 토큰이 만료되었습니다. 다시 시도해주세요.')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(next.message!)));
           break;
-        case LoginFail(message: final message):
+        case LoginStatus.fail:
           Log.i("State: Login Fail");
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text(message)));
+          ).showSnackBar(SnackBar(content: Text(next.message!)));
           break;
-        case LoginInitial():
+        case LoginStatus.initial:
           Log.i("State: Login Initial");
           break;
-        case LoginLoading():
+        case LoginStatus.loading:
           Log.i("State: Login Loading");
           break;
       }
     });
 
-    final isLoading = authState is LoginLoading;
+    final isLoading = authState.status == LoginStatus.loading;
 
     return Scaffold(
       body: Stack(
