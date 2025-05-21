@@ -80,7 +80,7 @@ class LoginPage extends ConsumerWidget {
                 GestureDetector(
                   onTap: () {},
                   child: SvgPicture.asset(
-                    "assets/images/apple_login.svg",
+                    "assets/images/apple_login_black.svg",
                     height: 56,
                   ),
                 ),
