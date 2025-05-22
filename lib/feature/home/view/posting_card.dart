@@ -1,9 +1,13 @@
 import 'package:alter/common/theme/app_theme.dart';
+import 'package:alter/common/util/%08formater/formatter.dart';
+import 'package:alter/feature/home/model/posting_response_model.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 class JobPostCard extends StatelessWidget {
-  const JobPostCard({super.key});
+  final Posting posting;
+
+  const JobPostCard({super.key, required this.posting});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +35,7 @@ class JobPostCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        "공고이름 최대글자수를 쭉쭉써내려가봅니다ㄱㄱㄱㄱㄱㄴㄴㄴㄴㄴㄴㄴㄷㄷㄷㄷㄷ",
+                        posting.title,
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                           color: AppColor.text,
                           fontWeight: FontWeight.w700,
@@ -46,17 +50,24 @@ class JobPostCard extends StatelessWidget {
                 ),
                 const Gap(4),
                 Text.rich(
-                  const TextSpan(
+                  TextSpan(
                     children: [
-                      TextSpan(text: "시급 "),
                       TextSpan(
-                        text: "10,030 ",
-                        style: TextStyle(
+                        text:
+                            "${Formatter.formatPaymentType(posting.paymentType)} ",
+                      ),
+                      TextSpan(
+                        text:
+                            "${Formatter.formatNumberWithComma(posting.payAmount)} ",
+                        style: const TextStyle(
                           color: AppColor.secondary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      TextSpan(text: "원 · 업무내용 · 1일전"),
+                      TextSpan(
+                        text:
+                            "원 · 업무내용 · ${Formatter.formatRelativeTime(posting.createdAt)}",
+                      ),
                     ],
                   ),
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
@@ -78,7 +89,7 @@ class JobPostCard extends StatelessWidget {
                         ),
                         const Gap(3),
                         Text(
-                          "12:00 ~ 18:00",
+                          "${posting.schedules.first.startTime.substring(0, 5)} ~ ${posting.schedules.first.endTime.substring(0, 5)}",
                           style: Theme.of(context).textTheme.bodyMedium!
                               .copyWith(color: AppColor.gray),
                         ),
@@ -90,7 +101,9 @@ class JobPostCard extends StatelessWidget {
                         ),
                         const Gap(3),
                         Text(
-                          "월, 수, 토, 일",
+                          posting.schedules.first.workingDays
+                              .map((e) => Formatter.formatDay(e))
+                              .join(", "),
                           style: Theme.of(context).textTheme.bodyMedium!
                               .copyWith(color: AppColor.gray),
                         ),

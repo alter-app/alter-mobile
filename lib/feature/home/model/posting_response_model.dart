@@ -74,8 +74,8 @@ abstract class Schedule with _$Schedule {
     required List<String> workingDays,
     required String startTime,
     required String endTime,
+    required String position,
     required int positionsNeeded,
-    required int position,
   }) = _Schedule;
 
   factory Schedule.fromJson(Map<String, dynamic> json) =>

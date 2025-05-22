@@ -10,7 +10,7 @@ class AppTheme {
     textTheme: _textTheme,
     primaryColor: AppColor.primary,
     appBarTheme: const AppBarTheme(
-      backgroundColor: AppColor.primary,
+      backgroundColor: AppColor.white,
       foregroundColor: AppColor.text,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -85,6 +85,13 @@ class AppTheme {
         borderRadius: BorderRadius.circular(8),
         borderSide: const BorderSide(color: AppColor.warning, width: 0.5),
       ),
+    ),
+    progressIndicatorTheme: const ProgressIndicatorThemeData(
+      color: AppColor.primary, // 메인 컬러로 설정
+      linearTrackColor: AppColor.gray, // 배경 트랙 컬러
+      circularTrackColor: AppColor.gray, // 원형 배경 트랙 컬러
+      refreshBackgroundColor: AppColor.white, // RefreshIndicator 배경
+      linearMinHeight: 4.0, // 선형 인디케이터 높이
     ),
   );
 

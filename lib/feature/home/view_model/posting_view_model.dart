@@ -1,4 +1,6 @@
+import 'package:alter/common/util/logger.dart';
 import 'package:alter/core/result.dart';
+import 'package:alter/feature/auth/view_model/login_view_model.dart';
 import 'package:alter/feature/home/model/posting_response_model.dart';
 import 'package:alter/feature/home/repository/posting_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,11 +11,9 @@ part 'posting_view_model.freezed.dart';
 @freezed
 abstract class PostingListState with _$PostingListState {
   const factory PostingListState({
-    @Default([]) List<Posting> postings,
+    @Default(AsyncValue.loading()) AsyncValue<List<Posting>> postings,
     String? cursor,
-    @Default(false) bool isLoading,
     @Default(false) bool hasMore,
-    @Default(null) String? error,
   }) = _PostingListState;
 }
 
@@ -23,61 +23,95 @@ final postingListViewModelProvider =
     );
 
 class PostingListViewModel extends Notifier<PostingListState> {
-  late final PostingRepository _postingRepository;
-  final String _authToken = "auth"; // 추후 수정
+  PostingRepository get _postingRepository =>
+      ref.watch(postingRepositoryProvider);
 
   @override
   PostingListState build() {
-    _postingRepository = ref.watch(postingRepositoryProvider);
-    // 여기에 auth 토큰 provider가 있어야 함
-    _fetchInitial();
     return const PostingListState();
   }
 
-  Future<void> _fetchInitial() async {
-    state = state.copyWith(isLoading: true, error: null);
+  String? get _accessToken {
+    final loginState = ref.watch(loginViewModelProvider);
+    return loginState.token?.accessToken;
+  }
 
-    final result = await _postingRepository.getPostings(
-      _authToken,
-      state.cursor,
-    );
-    switch (result) {
-      case Success(data: final data):
-        state = state.copyWith(
-          postings: data.data,
-          cursor: data.page.cursor,
-          hasMore: data.data.isNotEmpty,
-          isLoading: false,
-        );
-      case Failure(error: final error):
-        state = state.copyWith(isLoading: false, error: error.toString());
+  Future<void> initialize() async {
+    Log.d("access Token : $_accessToken");
+    if (_accessToken != null) {
+      await _fetchInitial();
+    } else {
+      state = state.copyWith(
+        postings: AsyncValue.error("토큰이 없습니다", StackTrace.current),
+      );
     }
+  }
+
+  Future<void> _fetchInitial() async {
+    state = state.copyWith(postings: const AsyncValue.loading());
+    final postingsAsync = await AsyncValue.guard(() async {
+      final token = _accessToken;
+      Log.d("accessToken: $token");
+
+      if (token == null) {
+        throw Exception("로그인이 필요합니다");
+      }
+
+      final result = await _postingRepository.getPostings(token, null);
+      switch (result) {
+        case Success(data: final data):
+          // 상태 업데이트 (cursor, hasMore)
+          state = state.copyWith(
+            cursor: data.page.cursor,
+            hasMore: data.data.isNotEmpty,
+          );
+          return data.data;
+        case Failure(error: final error):
+          throw Exception(error.toString());
+        default:
+          throw Exception("알 수 없는 에러가 발생");
+      }
+    });
+
+    state = state.copyWith(postings: postingsAsync);
   }
 
   Future<void> fetchNext() async {
-    if (state.isLoading || !state.hasMore) return;
+    if (state.postings.isLoading || !state.hasMore) return;
 
-    state = state.copyWith(isLoading: true, error: null);
+    final token = _accessToken;
+    if (token == null) return;
 
-    final result = await _postingRepository.getPostings(
-      _authToken,
-      state.cursor,
+    final postingsAsync = await AsyncValue.guard(() async {
+      final result = await _postingRepository.getPostings(token, state.cursor);
+      switch (result) {
+        case Success(data: final data):
+          final newData = data.data;
+          final currentData = state.postings.value ?? <Posting>[];
+
+          // 상태 업데이트
+          state = state.copyWith(
+            cursor: data.page.cursor,
+            hasMore: newData.isNotEmpty,
+          );
+
+          return [...currentData, ...newData];
+        case Failure(error: final error):
+          throw Exception(error.toString());
+        default:
+          throw Exception("알 수 없는 오류 발생");
+      }
+    });
+    Log.d(
+      'postings.length: ${state.postings.value!.length}, hasMore: ${state.hasMore}',
     );
-    switch (result) {
-      case Success(data: final data):
-        final newData = data.data;
-        state = state.copyWith(
-          postings: [...state.postings, ...newData],
-          cursor: data.page.cursor,
-          hasMore: newData.isNotEmpty,
-          isLoading: false,
-        );
-      case Failure(error: final error):
-        state = state.copyWith(isLoading: false, error: error.toString());
-    }
+
+    state = state.copyWith(postings: postingsAsync);
   }
 
   Future<void> refresh() async {
+    // 커서 리셋 후 초기 데이터 가져오기
+    state = state.copyWith(cursor: null, hasMore: false);
     await _fetchInitial();
   }
 }

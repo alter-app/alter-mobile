@@ -19,10 +19,12 @@ class PostingRepository {
     String? cursor,
   ) async {
     try {
-      final httpResponse = await postingApi.getPostings(auth, cursor, 10);
-      final status = httpResponse.response.statusCode;
+      final httpResponse = await postingApi.getPostings(
+        "Bearer $auth",
+        cursor,
+        10,
+      );
       final response = httpResponse.data;
-      Log.d("[$status] response: $response");
 
       return Result.success(response);
     } on DioException catch (e) {
@@ -38,10 +40,6 @@ class PostingRepository {
   }
 
   Future<Result<bool>> createPosting() async {
-    throw Exception();
-  }
-
-  Future<Result<PostingDetail>> getPostingDetail() async {
     throw Exception();
   }
 }
