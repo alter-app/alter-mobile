@@ -130,10 +130,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                           // 실제 데이터 아이템
                           if (index < postings.length) {
                             final posting = postings[index];
-                            return GestureDetector(
-                              //onTap: () => ,
-                              child: JobPostCard(posting: posting),
-                            );
+                            return JobPostCard(posting: posting);
                           }
                           // 무한 스크롤 로딩 인디케이터
                           else {

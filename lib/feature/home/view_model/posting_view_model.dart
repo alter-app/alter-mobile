@@ -67,9 +67,9 @@ class PostingListViewModel extends Notifier<PostingListState> {
           );
           return data.data;
         case Failure(error: final error):
-          throw Exception(error.toString());
+          throw error;
         default:
-          throw Exception("알 수 없는 에러가 발생");
+          throw Exception("알 수 없는 오류가 발생했습니다.");
       }
     });
 

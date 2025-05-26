@@ -39,6 +39,30 @@ class PostingRepository {
     }
   }
 
+  Future<Result<PostingDetail>> getPostingDetail(
+    String auth,
+    int postingId,
+  ) async {
+    try {
+      final httpResponse = await postingApi.getPostingDetail(
+        "Bearer $auth",
+        postingId,
+      );
+      final response = httpResponse.data.data;
+
+      return Result.success(response);
+    } on DioException catch (e) {
+      final status = e.response?.statusCode;
+      final response = e.response?.data;
+      Log.e("[$status] response: $response");
+
+      return Result.failure(e);
+    } catch (e) {
+      Log.e(e.toString());
+      return Result.failure(Exception("요청 실패 : 공고 상세"));
+    }
+  }
+
   Future<Result<bool>> createPosting() async {
     throw Exception();
   }

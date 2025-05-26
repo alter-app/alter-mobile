@@ -35,6 +35,6 @@ abstract class PostingApiClient {
   @GET("/app/postings/{postingId}")
   Future<HttpResponse<ApiResponse<PostingDetail>>> getPostingDetail(
     @Header('Authorization') String auth,
-    @Path('postingId') String postingId,
+    @Path('postingId') int postingId,
   );
 }

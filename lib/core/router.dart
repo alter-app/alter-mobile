@@ -8,7 +8,7 @@ import 'package:alter/feature/home/view/search_page.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
-  initialLocation: '/search',
+  initialLocation: '/login',
   debugLogDiagnostics: true,
   routes: [
     GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
@@ -31,7 +31,13 @@ final router = GoRouter(
     // page work
     GoRoute(path: '/home', builder: (context, state) => const HomePage()),
     GoRoute(path: '/search', builder: (context, state) => const SearchPage()),
-    GoRoute(path: '/posting', builder: (context, state) => const JobPostPage()),
+    GoRoute(
+      path: '/posting/:id',
+      builder: (context, state) {
+        final postId = state.pathParameters['id']!;
+        return JobPostPage(postId: postId);
+      },
+    ),
     // ShellRoute(
     //   routes: [
     //     GoRoute(
