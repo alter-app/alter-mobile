@@ -10,7 +10,7 @@ class AppTheme {
     textTheme: _textTheme,
     primaryColor: AppColor.primary,
     appBarTheme: const AppBarTheme(
-      backgroundColor: AppColor.primary,
+      backgroundColor: AppColor.white,
       foregroundColor: AppColor.text,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -86,6 +86,13 @@ class AppTheme {
         borderSide: const BorderSide(color: AppColor.warning, width: 0.5),
       ),
     ),
+    progressIndicatorTheme: const ProgressIndicatorThemeData(
+      color: AppColor.primary, // 메인 컬러로 설정
+      linearTrackColor: AppColor.gray, // 배경 트랙 컬러
+      circularTrackColor: AppColor.gray, // 원형 배경 트랙 컬러
+      refreshBackgroundColor: AppColor.white, // RefreshIndicator 배경
+      linearMinHeight: 4.0, // 선형 인디케이터 높이
+    ),
   );
 
   static final TextTheme _textTheme = const TextTheme(
@@ -130,7 +137,8 @@ class AppColor extends Color {
   AppColor(super.value);
 
   static const Color primary = Color(0xFF2DE283);
-  static const Color text = Color(0xFF1F2823);
+  static const Color secondary = Color(0xFF399982);
+  static const Color text = Color(0xFF111111);
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
   static const Color warning = Color(0xFFDC0000);

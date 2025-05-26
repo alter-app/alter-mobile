@@ -1,6 +1,7 @@
 import 'package:alter/common/util/logger.dart';
 import 'package:alter/feature/auth/view_model/login_view_model.dart';
 import 'package:alter/feature/auth/view_model/sign_up_view_model.dart';
+import 'package:alter/feature/home/view_model/posting_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -14,10 +15,11 @@ class LoginPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(loginViewModelProvider);
 
-    ref.listen<LoginState>(loginViewModelProvider, (previous, next) {
+    ref.listen<LoginState>(loginViewModelProvider, (previous, next) async {
       switch (next.status) {
         case LoginStatus.success:
-          context.go("/home");
+          //context.go("/home");
+          context.go('/search');
           break;
         case LoginStatus.signupRequired:
           Log.i("State: SignupRequired");
