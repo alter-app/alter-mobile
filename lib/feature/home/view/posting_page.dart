@@ -366,14 +366,17 @@ class _JobPostPageState extends ConsumerState<JobPostPage> {
                             Container(
                               color: AppColor.gray,
                               height: 201,
-                              // child: const NaverMap(
-                              //   options: NaverMapViewOptions(
-                              //     initialCameraPosition: NCameraPosition(
-                              //       target: NLatLng(37.5665, 126.9780), // 서울 시청 좌표
-                              //       zoom: 14,
-                              //     ),
-                              //   ),
-                              // ),
+                              child: const NaverMap(
+                                options: NaverMapViewOptions(
+                                  initialCameraPosition: NCameraPosition(
+                                    target: NLatLng(
+                                      37.5665,
+                                      126.9780,
+                                    ), // 서울 시청 좌표
+                                    zoom: 14,
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
                         ),
