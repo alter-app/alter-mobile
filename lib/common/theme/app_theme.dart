@@ -30,7 +30,7 @@ class AppTheme {
       style: OutlinedButton.styleFrom(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         side: const BorderSide(color: AppColor.primary, width: 1),
-        foregroundColor: Colors.black,
+        foregroundColor: AppColor.text,
         textStyle: const TextStyle(fontSize: 16),
         minimumSize: const Size(64, 50),
       ),
@@ -78,7 +78,7 @@ class AppTheme {
       // 포커스 폼
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColor.gray[40]!),
+        borderSide: const BorderSide(color: AppColor.primary),
       ),
       // 에러 폼
       errorBorder: OutlineInputBorder(
@@ -92,6 +92,19 @@ class AppTheme {
       circularTrackColor: AppColor.gray, // 원형 배경 트랙 컬러
       refreshBackgroundColor: AppColor.white, // RefreshIndicator 배경
       linearMinHeight: 4.0, // 선형 인디케이터 높이
+    ),
+    checkboxTheme: CheckboxThemeData(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+      checkColor: const WidgetStateColor.fromMap({
+        WidgetState.any: AppColor.white,
+      }),
+      fillColor: WidgetStateColor.fromMap({
+        WidgetState.selected: AppColor.primary,
+        WidgetState.any: AppColor.gray[20]!,
+      }),
+      side: BorderSide.none,
+      visualDensity: VisualDensity.compact,
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     ),
   );
 

@@ -3,12 +3,13 @@ import 'package:alter/feature/auth/view/sign_up/sign_up_info_page.dart';
 import 'package:alter/feature/auth/view/sign_up/sign_up_last_page.dart';
 import 'package:alter/feature/auth/view/sign_up/sign_up_page.dart';
 import 'package:alter/feature/home/view/home_page.dart';
+import 'package:alter/feature/home/view/posting_create_page.dart';
 import 'package:alter/feature/home/view/posting_page.dart';
 import 'package:alter/feature/home/view/search_page.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
-  initialLocation: '/login',
+  initialLocation: '/home',
   debugLogDiagnostics: true,
   routes: [
     GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
@@ -37,6 +38,10 @@ final router = GoRouter(
         final postId = state.pathParameters['id']!;
         return JobPostPage(postId: postId);
       },
+    ),
+    GoRoute(
+      path: '/create-posting',
+      builder: (context, state) => const PostingCreatePage(),
     ),
     // ShellRoute(
     //   routes: [

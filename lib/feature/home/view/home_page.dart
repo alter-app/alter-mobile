@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -7,10 +8,17 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: const SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(children: [Text("HOME")]),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                context.push("/create-posting");
+              },
+              child: const Text("공고 작성"),
+            ),
+          ],
         ),
       ),
     );
