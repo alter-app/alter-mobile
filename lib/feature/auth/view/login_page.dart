@@ -18,8 +18,7 @@ class LoginPage extends ConsumerWidget {
     ref.listen<LoginState>(loginViewModelProvider, (previous, next) async {
       switch (next.status) {
         case LoginStatus.success:
-          //context.go("/home");
-          context.go('/search');
+          context.go("/");
           break;
         case LoginStatus.signupRequired:
           Log.i("State: SignupRequired");

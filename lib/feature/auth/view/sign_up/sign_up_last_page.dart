@@ -225,8 +225,7 @@ class _SignUpLastPageState extends ConsumerState<SignUpLastPage> {
                                 );
                                 if (loginState.status == LoginStatus.success) {
                                   if (context.mounted) {
-                                    context.go('/search');
-                                    //context.go('/home');
+                                    context.go('/');
                                   }
                                 }
                               }

@@ -13,6 +13,12 @@ class AppTheme {
       backgroundColor: AppColor.white,
       foregroundColor: AppColor.text,
     ),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      backgroundColor: AppColor.white,
+      type: BottomNavigationBarType.fixed,
+      selectedItemColor: AppColor.text,
+      unselectedItemColor: AppColor.gray[30],
+    ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(
