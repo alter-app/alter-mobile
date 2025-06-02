@@ -112,6 +112,14 @@ class AppTheme {
       visualDensity: VisualDensity.compact,
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     ),
+    radioTheme: RadioThemeData(
+      fillColor: WidgetStateColor.fromMap({
+        WidgetState.selected: AppColor.primary,
+        WidgetState.any: AppColor.gray[20]!,
+      }),
+      visualDensity: VisualDensity.compact,
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    ),
   );
 
   static final TextTheme _textTheme = const TextTheme(

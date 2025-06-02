@@ -1,26 +1,25 @@
 import 'package:alter/common/theme/app_theme.dart';
+import 'package:alter/feature/home/model/posting_response_model.dart';
+import 'package:alter/feature/home/view_model/posting_create_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class JobSelectDropdown extends StatefulWidget {
-  const JobSelectDropdown({super.key});
+class JobSelectDropdown extends ConsumerStatefulWidget {
+  final ValueChanged<int?> onSelectionChanged;
+  final List<Keyword> jobOptions;
+  const JobSelectDropdown({
+    super.key,
+    required this.onSelectionChanged,
+    required this.jobOptions,
+  });
 
   @override
-  State<JobSelectDropdown> createState() => _JobSelectDropdownState();
+  ConsumerState<JobSelectDropdown> createState() => _JobSelectDropdownState();
 }
 
-class _JobSelectDropdownState extends State<JobSelectDropdown> {
-  String _selectedJob = "선택안함";
-  final List<String> _jobOptions = [
-    "카페",
-    "음식점",
-    "편의점",
-    "학원",
-    "사무직",
-    "생산/노무",
-    "판매/서비스",
-    "기타",
-  ];
+class _JobSelectDropdownState extends ConsumerState<JobSelectDropdown> {
+  Keyword? _selectedJob;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +37,7 @@ class _JobSelectDropdownState extends State<JobSelectDropdown> {
         child: Row(
           children: [
             Text(
-              _selectedJob,
+              _selectedJob != null ? _selectedJob!.name : "선택안함",
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 color: AppColor.text,
                 fontSize: 15,
@@ -59,7 +58,7 @@ class _JobSelectDropdownState extends State<JobSelectDropdown> {
       isScrollControlled: true, // 키보드가 올라올 때 바텀시트가 밀려 올라가도록
       shape: const RoundedRectangleBorder(
         // 상단 모서리를 둥글게
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
       ),
       backgroundColor: Colors.white, // 바텀시트 배경색
       builder: (BuildContext context) {
@@ -96,14 +95,14 @@ class _JobSelectDropdownState extends State<JobSelectDropdown> {
               ), // 구분선
               Expanded(
                 child: ListView.builder(
-                  itemCount: _jobOptions.length,
+                  itemCount: widget.jobOptions.length,
                   itemBuilder: (context, index) {
-                    final job = _jobOptions[index];
+                    final job = widget.jobOptions[index];
                     return Column(
                       children: [
                         ListTile(
                           title: Text(
-                            job,
+                            job.name,
                             style: Theme.of(
                               context,
                             ).textTheme.bodyLarge!.copyWith(
@@ -128,12 +127,12 @@ class _JobSelectDropdownState extends State<JobSelectDropdown> {
                             setState(() {
                               _selectedJob = job; // 상태 업데이트
                             });
-                            //widget.onJobSelected(job); // 부모 위젯으로 선택 값 전달
+                            widget.onSelectionChanged(job.id);
                             Navigator.pop(context); // 바텀시트 닫기
                           },
                         ),
                         if (index <
-                            _jobOptions.length - 1) // 마지막 항목 제외하고 구분선 추가
+                            widget.jobOptions.length - 1) // 마지막 항목 제외하고 구분선 추가
                           Divider(
                             height: 0,
                             thickness: 0.5,

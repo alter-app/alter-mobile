@@ -2,31 +2,30 @@ import 'package:alter/common/theme/app_theme.dart';
 import 'package:alter/common/util/logger.dart';
 import 'package:alter/common/widget/day_selector.dart';
 import 'package:alter/common/widget/time_period_selector.dart';
+import 'package:alter/feature/home/model/schedule_data_model.dart';
+import 'package:alter/feature/home/view_model/posting_create_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 
-class ScheduleWidget extends StatefulWidget {
-  @override
-  final Key scheduleKey;
-  final ValueChanged<Key> onDelete;
-  const ScheduleWidget({required this.scheduleKey, required this.onDelete})
-    : super(key: scheduleKey);
+class ScheduleWidget extends ConsumerWidget {
+  final ScheduleData schedule; // ViewModel에서 전달받을 Schedule 객체
+  final ValueChanged<int> onDelete; // id로 삭제 요청
+
+  const ScheduleWidget({
+    required this.schedule,
+    required this.onDelete,
+    super.key,
+  });
 
   @override
-  State<ScheduleWidget> createState() => _ScheduleWidgetState();
-}
-
-class _ScheduleWidgetState extends State<ScheduleWidget> {
-  bool isDayChecked = false;
-  bool isTimeChecked = false;
-  TimeOfDay? _startTime;
-  TimeOfDay? _endTime;
-
-  @override
-  Widget build(BuildContext context) {
-    final String scheduleNumber =
-        (widget.scheduleKey as ValueKey).value.toString().split('_').last;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final postingCreateViewModel = ref.read(
+      postingCreateViewModelProvider.notifier,
+    );
+    final bool isDayNegotiable = schedule.isDayNegotiable;
+    final bool isTimeNegotiable = schedule.isTimeNegotiable;
 
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 32, 24, 28),
@@ -39,7 +38,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
           Row(
             children: [
               Text(
-                "일정 $scheduleNumber",
+                "일정 ${schedule.id}",
                 style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                   color: AppColor.gray,
                   fontWeight: FontWeight.w700,
@@ -48,8 +47,8 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
               const Spacer(),
               GestureDetector(
                 onTap: () {
-                  Log.d("x 버튼 클릭 ${widget.scheduleKey}");
-                  widget.onDelete(widget.scheduleKey);
+                  Log.d("x 버튼 클릭 ${schedule.id}");
+                  onDelete(schedule.id);
                 },
                 child: SvgPicture.asset("assets/icons/x-circle.svg"),
               ),
@@ -67,7 +66,15 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                 ),
               ),
               const Spacer(),
-              const DaySelector(),
+              DaySelector(
+                selectedDays: schedule.selectedDays,
+                onSelectionChanged: (selectedDays) {
+                  postingCreateViewModel.updateScheduleDays(
+                    schedule.id,
+                    selectedDays,
+                  );
+                },
+              ),
             ],
           ),
           const Gap(6),
@@ -82,11 +89,14 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                 ),
               ),
               Checkbox(
-                value: isDayChecked,
+                value: isDayNegotiable,
                 onChanged: (value) {
-                  setState(() {
-                    isDayChecked = value!;
-                  });
+                  if (value != null) {
+                    postingCreateViewModel.updateScheduleDayNegotiable(
+                      schedule.id,
+                      value,
+                    );
+                  }
                 },
               ),
             ],
@@ -105,16 +115,16 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
               const Gap(36),
               Expanded(
                 child: TimePeriodSelector(
-                  initialEndTime: const TimeOfDay(hour: 9, minute: 0),
-                  initialStartTime: const TimeOfDay(hour: 18, minute: 0),
                   onStartTimeChanged:
-                      (time) => setState(() {
-                        _startTime = time;
-                      }),
+                      (time) => postingCreateViewModel.updateScheduleStartTime(
+                        schedule.id,
+                        time,
+                      ),
                   onEndTimeChanged:
-                      (time) => setState(() {
-                        _endTime = time;
-                      }),
+                      (time) => postingCreateViewModel.updateScheduleEndTime(
+                        schedule.id,
+                        time,
+                      ),
                 ),
               ),
             ],
@@ -131,11 +141,14 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                 ),
               ),
               Checkbox(
-                value: isTimeChecked,
+                value: isTimeNegotiable,
                 onChanged: (value) {
-                  setState(() {
-                    isTimeChecked = value!;
-                  });
+                  if (value != null) {
+                    postingCreateViewModel.updateScheduleTimeNegotiable(
+                      schedule.id,
+                      value,
+                    );
+                  }
                 },
               ),
             ],

@@ -1,6 +1,7 @@
 import 'package:alter/common/theme/app_theme.dart';
 import 'package:alter/common/util/logger.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum Day {
   monday("MONDAY", "월"),
@@ -17,15 +18,21 @@ enum Day {
   const Day(this.code, this.displayName);
 }
 
-class DaySelector extends StatefulWidget {
-  const DaySelector({super.key});
+class DaySelector extends ConsumerStatefulWidget {
+  final Set<Day> selectedDays;
+  final ValueChanged<Set<Day>> onSelectionChanged;
+  const DaySelector({
+    super.key,
+    required this.selectedDays,
+    required this.onSelectionChanged,
+  });
 
   @override
-  State<DaySelector> createState() => _DaySelectorState();
+  ConsumerState<DaySelector> createState() => _DaySelectorState();
 }
 
-class _DaySelectorState extends State<DaySelector> {
-  final Set<Day> _selectedDays = {};
+class _DaySelectorState extends ConsumerState<DaySelector> {
+  final Set<Day> _currentSelectedDays = {};
 
   @override
   Widget build(BuildContext context) {
@@ -33,18 +40,19 @@ class _DaySelectorState extends State<DaySelector> {
       spacing: 8,
       children:
           Day.values.map((day) {
-            final bool isSelected = _selectedDays.contains(day);
+            final bool isSelected = _currentSelectedDays.contains(day);
             return GestureDetector(
               onTap: () {
                 setState(() {
                   if (isSelected) {
-                    _selectedDays.remove(day);
+                    _currentSelectedDays.remove(day);
                   } else {
-                    _selectedDays.add(day);
+                    _currentSelectedDays.add(day);
                   }
-                  Log.i(
-                    'Selected Days: ${_selectedDays.map((d) => d.displayName).join(', ')}',
-                  );
+                  widget.onSelectionChanged(_currentSelectedDays);
+                  // Log.i(
+                  //   'Selected Days: ${_currentSelectedDays.map((d) => d.displayName).join(', ')}',
+                  // );
                 });
               },
               child: Container(
