@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () {
-                context.push("/search");
+                context.push("/postings");
               },
               child: const Text("공고 조회"),
             ),

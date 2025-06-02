@@ -34,16 +34,7 @@ final router = GoRouter(
     ),
     // Firebase Auth
     GoRoute(path: '/link', redirect: (context, state) => '/sign-up'),
-    // page work
-    //GoRoute(path: '/home', builder: (context, state) => const HomePage()),
-    //GoRoute(path: '/search', builder: (context, state) => const SearchPage()),
-    GoRoute(
-      path: '/posting/:id',
-      builder: (context, state) {
-        final postId = state.pathParameters['id']!;
-        return JobPostPage(postId: postId);
-      },
-    ),
+    // no bottom Nav
     GoRoute(
       path: '/create-posting',
       builder: (context, state) => const PostingCreatePage(),
@@ -59,8 +50,17 @@ final router = GoRouter(
           builder: (context, state) => const HomePage(),
           routes: [
             GoRoute(
-              path: '/search',
+              path: '/postings',
               builder: (context, state) => const SearchPage(),
+              routes: [
+                GoRoute(
+                  path: '/:id',
+                  builder: (context, state) {
+                    final postId = state.pathParameters['id']!;
+                    return JobPostPage(postId: postId);
+                  },
+                ),
+              ],
             ),
           ],
         ),
