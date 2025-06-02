@@ -22,6 +22,8 @@ abstract class PostingApiClient {
   다음 페이지 요청할 때는 응답으로 온 cursor를 cursor 파라미터에 넣어서 요청하면 됨
   반복적으로 요청하다가 빈 data로 응답될 경우 스크롤 안 되게 막고 (이제 더이상 데이터가 없다는 의미)
    */
+
+  // 추후 auth는 dio interceptor에서 처리 할 예정
   @GET("/app/postings")
   Future<HttpResponse<PostingResponse>> getPostings(
     @Header('Authorization') String auth, // 'true' or other 아니면 authToken 입력
@@ -30,11 +32,19 @@ abstract class PostingApiClient {
   );
 
   @POST("/app/postings")
-  Future<ApiResponse> createPosting(@Body() PostingRequest body);
+  Future<ApiResponse> createPosting(
+    @Header('Authorization') String auth,
+    @Body() PostingRequest body,
+  );
 
   @GET("/app/postings/{postingId}")
   Future<HttpResponse<ApiResponse<PostingDetail>>> getPostingDetail(
     @Header('Authorization') String auth,
     @Path('postingId') int postingId,
+  );
+
+  @GET("/app/postings/available-keywords")
+  Future<ApiResponse<List<Keyword>>> getKeywords(
+    @Header('Authorization') String auth,
   );
 }
