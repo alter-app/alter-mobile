@@ -24,7 +24,7 @@ class PostingCreatePage extends ConsumerStatefulWidget {
 class _PostingCreatePageState extends ConsumerState<PostingCreatePage> {
   final GlobalKey<AnimatedListState> _animatedListKey =
       GlobalKey<AnimatedListState>();
-  final int _minWage = 10300;
+  final int _minWage = 10030;
   int calculateToHouly = 0;
 
   final List<int?> _selectedKeywordIds = List.filled(3, null);

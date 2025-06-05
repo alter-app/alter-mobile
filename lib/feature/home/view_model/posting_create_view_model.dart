@@ -1,3 +1,4 @@
+import 'package:alter/common/util/extension.dart';
 import 'package:alter/common/util/logger.dart';
 import 'package:alter/common/widget/day_selector.dart';
 import 'package:alter/core/result.dart';
@@ -80,9 +81,12 @@ class PostingCreateViewModel extends Notifier<PostingCreateState> {
         state.schedules.map((schedule) {
           return Schedule(
             workingDays:
-                schedule.selectedDays.map((day) {
-                  return day.code;
-                }).toList(),
+                schedule.selectedDays
+                    .map((day) {
+                      return day.code;
+                    })
+                    .toSet()
+                    .toSortedWeekdays(),
             startTime: schedule.startTime,
             endTime: schedule.endTime,
             position: "0",
