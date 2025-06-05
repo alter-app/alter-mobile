@@ -29,11 +29,11 @@ class _SignUpInfoPageState extends ConsumerState<SignUpInfoPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // 텍스트 필드 검사
-    nameTextController.addListener(() {
-      setState(() {
+    nameTextController.addListener(
+      () => setState(() {
         isNameValid = nameTextController.text.isNotEmpty;
-      });
-    });
+      }),
+    );
     phoneTextController.addListener(
       () => setState(() {
         isPhoneValid = Validator.validatePhoneNumber(phoneTextController.text);

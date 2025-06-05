@@ -21,7 +21,7 @@ class JobPostCard extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: InkWell(
-              onTap: () => context.push('/posting/${posting.id}'),
+              onTap: () => context.push('/postings/${posting.id}'),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
