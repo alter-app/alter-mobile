@@ -25,7 +25,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(8),
           side: BorderSide.none,
         ),
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+        //padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
         foregroundColor: AppColor.white,
         backgroundColor: AppColor.primary,
         disabledBackgroundColor: AppColor.gray[30]!,

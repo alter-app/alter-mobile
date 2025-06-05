@@ -1,9 +1,10 @@
 import 'package:alter/common/theme/app_theme.dart';
 import 'package:alter/feature/home/model/posting_response_model.dart';
-import 'package:alter/feature/home/view_model/posting_create_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
 class JobSelectDropdown extends ConsumerStatefulWidget {
   final ValueChanged<int?> onSelectionChanged;
@@ -57,42 +58,26 @@ class _JobSelectDropdownState extends ConsumerState<JobSelectDropdown> {
       context: context,
       isScrollControlled: true, // 키보드가 올라올 때 바텀시트가 밀려 올라가도록
       shape: const RoundedRectangleBorder(
-        // 상단 모서리를 둥글게
         borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
       ),
-      backgroundColor: Colors.white, // 바텀시트 배경색
+      backgroundColor: AppColor.white, // 바텀시트 배경색
       builder: (BuildContext context) {
         return Container(
           height: MediaQuery.of(context).size.height * 0.5, // 화면 높이의 50%
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 드래그 핸들 (선택 사항)
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                    color: AppColor.gray[30],
-                    borderRadius: BorderRadius.circular(2),
+              Container(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Text(
+                  "업직종을 선택하세요",
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColor.text,
                   ),
                 ),
               ),
-              Text(
-                "업직종을 선택하세요",
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: AppColor.text,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              Divider(
-                height: 24,
-                thickness: 1,
-                color: AppColor.gray[20],
-              ), // 구분선
               Expanded(
                 child: ListView.builder(
                   itemCount: widget.jobOptions.length,
@@ -100,44 +85,49 @@ class _JobSelectDropdownState extends ConsumerState<JobSelectDropdown> {
                     final job = widget.jobOptions[index];
                     return Column(
                       children: [
-                        ListTile(
-                          title: Text(
-                            job.name,
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodyLarge!.copyWith(
-                              color:
-                                  _selectedJob == job
-                                      ? AppColor.primary
-                                      : AppColor.text,
-                              fontWeight:
-                                  _selectedJob == job
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                            ),
-                          ),
-                          trailing:
-                              _selectedJob == job
-                                  ? const Icon(
-                                    Icons.check,
-                                    color: AppColor.primary,
-                                  )
-                                  : null,
+                        GestureDetector(
                           onTap: () {
                             setState(() {
                               _selectedJob = job; // 상태 업데이트
                             });
                             widget.onSelectionChanged(job.id);
-                            Navigator.pop(context); // 바텀시트 닫기
+                            context.pop();
                           },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: Row(
+                              children: [
+                                const Gap(4),
+                                Text(
+                                  job.name,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodyLarge!.copyWith(
+                                    color:
+                                        _selectedJob == job
+                                            ? AppColor.primary
+                                            : AppColor.text,
+                                    fontWeight:
+                                        _selectedJob == job
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                  ),
+                                ),
+                                const Spacer(),
+                                if (_selectedJob == job)
+                                  const Icon(
+                                    Icons.check,
+                                    color: AppColor.primary,
+                                  ),
+                              ],
+                            ),
+                          ),
                         ),
                         if (index <
                             widget.jobOptions.length - 1) // 마지막 항목 제외하고 구분선 추가
                           Divider(
                             height: 0,
                             thickness: 0.5,
-                            indent: 16,
-                            endIndent: 16,
                             color: AppColor.gray[20],
                           ),
                       ],

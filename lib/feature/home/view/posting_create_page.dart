@@ -545,9 +545,8 @@ class _PostingCreatePageState extends ConsumerState<PostingCreatePage> {
             // 버튼
             Container(
               width: double.infinity,
-              height: 64,
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-
+              height: 72,
+              padding: const EdgeInsets.fromLTRB(20, 14, 20, 10),
               child: ElevatedButton(
                 onPressed: () async {
                   bool isValid = true;
@@ -599,11 +598,13 @@ class _PostingCreatePageState extends ConsumerState<PostingCreatePage> {
                     await postingCreateViewModel.createPosting();
                   }
                 },
-                child: Text(
-                  "다음",
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    color: AppColor.white,
-                    fontWeight: FontWeight.w700,
+                child: Center(
+                  child: Text(
+                    "다음",
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: AppColor.white,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),

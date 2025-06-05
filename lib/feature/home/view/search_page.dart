@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:alter/common/theme/app_theme.dart';
 import 'package:alter/common/util/logger.dart';
 import 'package:alter/feature/home/view/posting_card.dart';
@@ -29,9 +28,18 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   }
 
   void _onScroll() {
+    // 스크롤 컨트롤러가 현재 위젯 트리의 스크롤 뷰에 연결되어 있는지 확인
+    if (!_scrollController.hasClients) {
+      return;
+    }
+
     // 스크롤이 끝에서 300px 전에 도달하면 다음 페이지 로드
     if (_throttleTimer?.isActive ?? false) return;
     _throttleTimer = Timer(const Duration(milliseconds: 300), () {
+      if (!_scrollController.hasClients) {
+        _throttleTimer?.cancel(); // 컨트롤러가 없으면 타이머도 취소
+        return;
+      }
       if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent - 300) {
         ref.read(postingListViewModelProvider.notifier).fetchNext();
