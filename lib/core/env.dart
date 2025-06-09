@@ -4,6 +4,9 @@ part 'env.g.dart';
 
 @Envied(path: '.env')
 abstract class Env {
+  @EnviedField(varName: 'APP_NAME')
+  static String appName = _Env.appName;
+
   @EnviedField(varName: 'KAKAO_NATIVE_APP_KEY', obfuscate: true)
   static String kakaoAppKey = _Env.kakaoAppKey;
 

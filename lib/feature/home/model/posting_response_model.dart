@@ -46,7 +46,7 @@ abstract class Posting with _$Posting {
 abstract class PostingDetail with _$PostingDetail {
   const factory PostingDetail({
     required int id,
-    required int workspace,
+    required WorkSpace workspace,
     required String title,
     required String description,
     required int payAmount,
@@ -80,4 +80,20 @@ abstract class Schedule with _$Schedule {
 
   factory Schedule.fromJson(Map<String, dynamic> json) =>
       _$ScheduleFromJson(json);
+}
+
+@freezed
+abstract class WorkSpace with _$WorkSpace {
+  const factory WorkSpace({
+    required int id,
+    required String name,
+    required String fullAddress,
+    required String district,
+    required String town,
+    required double latitude,
+    required double longitude,
+  }) = _WorkSpace;
+
+  factory WorkSpace.fromJson(Map<String, dynamic> json) =>
+      _$WorkSpaceFromJson(json);
 }

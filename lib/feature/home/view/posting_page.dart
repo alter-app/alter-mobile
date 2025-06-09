@@ -1,10 +1,15 @@
 import 'package:alter/common/theme/app_theme.dart';
 import 'package:alter/common/util/%08formater/formatter.dart';
+import 'package:alter/common/util/logger.dart';
+import 'package:alter/core/env.dart';
 import 'package:alter/feature/home/view_model/posting_detail_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class JobPostPage extends ConsumerStatefulWidget {
   final String postId;
@@ -15,8 +20,6 @@ class JobPostPage extends ConsumerStatefulWidget {
 }
 
 class _JobPostPageState extends ConsumerState<JobPostPage> {
-  // TODO: 상단에 근무 위치 내용이랑 화살표 조금 두꺼워진 것 같아요 전철 뱃지, 시급 뱃지 여백이 조금 다른 것 같아서요
-  // 아이콘 업데이트
   @override
   void initState() {
     super.initState();
@@ -67,6 +70,18 @@ class _JobPostPageState extends ConsumerState<JobPostPage> {
           data: (posting) {
             final keywords = posting.keywords;
             final schedules = posting.schedules;
+            final iconImage = const NOverlayImage.fromAssetImage(
+              "assets/icons/location.png",
+            );
+            final marker = NMarker(
+              size: const Size(48, 48),
+              id: 'marker_${widget.postId}',
+              position: NLatLng(
+                posting.workspace.latitude,
+                posting.workspace.longitude,
+              ),
+              icon: iconImage,
+            );
             return SingleChildScrollView(
               child: Column(
                 children: [
@@ -85,7 +100,7 @@ class _JobPostPageState extends ConsumerState<JobPostPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "상호야! 너 이름 적고가!",
+                                  posting.workspace.name,
                                   style: Theme.of(
                                     context,
                                   ).textTheme.bodyMedium!.copyWith(
@@ -160,14 +175,19 @@ class _JobPostPageState extends ConsumerState<JobPostPage> {
                             const Gap(16),
                             Row(
                               children: [
+                                // 급여 종류
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 8,
-                                    vertical: 4,
+                                    vertical: 0.5,
                                   ),
                                   decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: AppColor.gray[20]!,
+                                      width: 1,
+                                    ),
                                     color: AppColor.primary,
-                                    borderRadius: BorderRadius.circular(999),
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Text(
                                     "${Formatter.formatPaymentType(posting.paymentType)} ",
@@ -180,8 +200,9 @@ class _JobPostPageState extends ConsumerState<JobPostPage> {
                                   ),
                                 ),
                                 const Gap(8),
+                                // 급여
                                 Text(
-                                  "${Formatter.formatNumberWithComma(posting.payAmount)} ",
+                                  "${Formatter.formatNumberWithComma(posting.payAmount)} 원",
                                   style: Theme.of(
                                     context,
                                   ).textTheme.bodyLarge!.copyWith(
@@ -250,8 +271,7 @@ class _JobPostPageState extends ConsumerState<JobPostPage> {
                                 ),
                                 const Gap(8),
                                 Text(
-                                  // TODO: Formatter 생성
-                                  "(9시간)",
+                                  "(${Formatter.calculateWorkHours(schedules.first.startTime, schedules.first.endTime)})",
                                   style: Theme.of(
                                     context,
                                   ).textTheme.bodyMedium!.copyWith(
@@ -287,21 +307,29 @@ class _JobPostPageState extends ConsumerState<JobPostPage> {
                             const Gap(16),
                             Row(
                               children: [
-                                Expanded(
-                                  child: Text(
-                                    "경기 무슨시 무슨구 무슨동 무슨로00번길 00 글자수 최대로.ㄱㄱㄱㄱㄱㄴㄴㄴㄴ ",
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium!.copyWith(
-                                      color: AppColor.text,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
+                                Text(
+                                  posting.workspace.fullAddress,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodyLarge!.copyWith(
+                                    color: AppColor.text,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                                const Gap(8),
+                                GestureDetector(
+                                  onTap:
+                                      () => _copyToClipboard(
+                                        posting.workspace.fullAddress,
+                                      ),
+                                  child: SvgPicture.asset(
+                                    width: 16,
+                                    height: 16,
+                                    "assets/icons/copy.svg",
                                   ),
                                 ),
-                                const Gap(6),
-                                const Icon(Icons.keyboard_arrow_down),
                               ],
                             ),
                             const Gap(16),
@@ -331,7 +359,7 @@ class _JobPostPageState extends ConsumerState<JobPostPage> {
                                   height: 22,
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 8,
-                                    vertical: 2,
+                                    vertical: 0.5,
                                   ),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
@@ -339,7 +367,7 @@ class _JobPostPageState extends ConsumerState<JobPostPage> {
                                   ),
                                   child: Center(
                                     child: Text(
-                                      "수인 분당선",
+                                      "수인분당선",
                                       style: Theme.of(
                                         context,
                                       ).textTheme.bodyMedium!.copyWith(
@@ -363,17 +391,35 @@ class _JobPostPageState extends ConsumerState<JobPostPage> {
                             ),
                             const Gap(16),
                             //지도
-                            Container(
-                              color: AppColor.gray,
-                              height: 201,
-                              child: const NaverMap(
-                                options: NaverMapViewOptions(
-                                  initialCameraPosition: NCameraPosition(
-                                    target: NLatLng(
-                                      37.5665,
-                                      126.9780,
-                                    ), // 서울 시청 좌표
-                                    zoom: 14,
+                            GestureDetector(
+                              onTap: () {
+                                Log.d("지도 터치");
+                                _launchNaverMapSearch(posting.workspace.name);
+                              },
+                              child: Container(
+                                color: AppColor.gray,
+                                height: 201,
+                                child: IgnorePointer(
+                                  ignoring: true,
+                                  child: NaverMap(
+                                    key: ValueKey('naver_map_${widget.postId}'),
+                                    options: NaverMapViewOptions(
+                                      rotationGesturesEnable: false,
+                                      scrollGesturesEnable: false,
+                                      tiltGesturesEnable: false,
+                                      zoomGesturesEnable: false,
+                                      stopGesturesEnable: false,
+                                      initialCameraPosition: NCameraPosition(
+                                        target: NLatLng(
+                                          posting.workspace.latitude,
+                                          posting.workspace.longitude,
+                                        ), // 서울 시청 좌표
+                                        zoom: 16,
+                                      ),
+                                    ),
+                                    onMapReady: (controller) {
+                                      controller.addOverlay(marker);
+                                    },
                                   ),
                                 ),
                               ),
@@ -385,7 +431,6 @@ class _JobPostPageState extends ConsumerState<JobPostPage> {
                       // 상세 내용
                       Container(
                         color: AppColor.white,
-                        height: 285,
                         padding: const EdgeInsets.all(20),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -402,7 +447,19 @@ class _JobPostPageState extends ConsumerState<JobPostPage> {
                             ),
                             const Gap(24),
                             // 상세 이미지
-                            Container(color: AppColor.gray, height: 201),
+                            Container(
+                              width: double.infinity,
+                              constraints: const BoxConstraints(minHeight: 150),
+                              child: Text(
+                                posting.description,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium!.copyWith(
+                                  color: AppColor.text,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -446,6 +503,51 @@ class _JobPostPageState extends ConsumerState<JobPostPage> {
             );
           },
         ),
+      ),
+    );
+  }
+
+  Future<void> _launchNaverMapSearch(String query) async {
+    if (query.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('검색할 매장 이름이 없습니다.')));
+      return;
+    }
+
+    final String encodedQuery = Uri.encodeComponent(query);
+    final String naverMapScheme =
+        'nmap://search?query=$encodedQuery&appname=${Env.appName}';
+    final Uri url = Uri.parse(naverMapScheme);
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      // 네이버 지도 앱이 설치되어 있지 않을 경우 모바일 웹으로 대체
+      Log.d('네이버 지도 앱을 열 수 없습니다. 앱이 설치되어 있는지 확인해주세요.');
+      final Uri webUrl = Uri.parse(
+        'https://m.map.naver.com/search2/search.naver?query=$encodedQuery',
+      );
+      if (await canLaunchUrl(webUrl)) {
+        await launchUrl(webUrl);
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('네이버 지도 앱 또는 웹 페이지를 열 수 없습니다.')),
+          );
+        }
+      }
+    }
+  }
+
+  void _copyToClipboard(String text) {
+    Clipboard.setData(ClipboardData(text: text));
+
+    // 사용자에게 복사 완료를 알리는 스낵바 표시
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('클립보드에 복사되었습니다.'),
+        duration: Duration(seconds: 2),
       ),
     );
   }
