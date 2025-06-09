@@ -74,4 +74,44 @@ class Formatter {
       return '$years년 전';
     }
   }
+
+  static String calculateWorkHours(String startTimeStr, String endTimeStr) {
+    int parseTimeToMinutes(String timeStr) {
+      final parts = timeStr.split(':');
+      final hour = int.parse(parts[0]);
+      final minute = int.parse(parts[1]);
+      return hour * 60 + minute;
+    }
+
+    final int startMinutes = parseTimeToMinutes(startTimeStr);
+    final int endMinutes = parseTimeToMinutes(endTimeStr);
+
+    int durationMinutes;
+
+    // 종료 시간이 시작 시간보다 작은 경우 (자정을 넘어가는 경우)
+    if (endMinutes < startMinutes) {
+      // 다음 날로 넘어간 것으로 간주하여 24시간(1440분)을 더해줍니다.
+      durationMinutes = (24 * 60 - startMinutes) + endMinutes;
+    } else {
+      // 일반적인 경우, 단순한 시간 차이를 계산합니다.
+      durationMinutes = endMinutes - startMinutes;
+    }
+
+    String minutesToString(int totalMinutes) {
+      final hour = totalMinutes ~/ 60;
+      final minute = totalMinutes % 60;
+
+      if (hour > 0 && minute > 0) {
+        return "$hour시간 $minute분";
+      } else if (hour > 0) {
+        return "$hour시간";
+      } else if (minute > 0) {
+        return "$minute분";
+      } else {
+        return "0시간";
+      }
+    }
+
+    return minutesToString(durationMinutes);
+  }
 }

@@ -2,13 +2,22 @@ import 'package:alter/common/theme/app_theme.dart';
 import 'package:alter/common/util/%08formater/formatter.dart';
 import 'package:alter/feature/home/model/posting_response_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
-class JobPostCard extends StatelessWidget {
+class JobPostCard extends StatefulWidget {
   final Posting posting;
 
   const JobPostCard({super.key, required this.posting});
+
+  @override
+  State<JobPostCard> createState() => _JobPostCardState();
+}
+
+class _JobPostCardState extends State<JobPostCard> {
+  // TODO: 추후 posting에 들어있을 예정
+  bool isScrapped = false;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +30,7 @@ class JobPostCard extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: InkWell(
-              onTap: () => context.push('/postings/${posting.id}'),
+              onTap: () => context.push('/postings/${widget.posting.id}'),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -38,7 +47,7 @@ class JobPostCard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          posting.title,
+                          widget.posting.title,
                           style: Theme.of(
                             context,
                           ).textTheme.bodyLarge!.copyWith(
@@ -50,7 +59,18 @@ class JobPostCard extends StatelessWidget {
                         ),
                       ),
                       const Gap(25),
-                      const Icon(Icons.bookmark_outline),
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            isScrapped = !isScrapped;
+                          });
+                        },
+                        child: SvgPicture.asset(
+                          isScrapped
+                              ? "assets/icons/bookmark_filled.svg"
+                              : "assets/icons/bookmark_outlined.svg",
+                        ),
+                      ),
                     ],
                   ),
                   const Gap(4),
@@ -59,11 +79,11 @@ class JobPostCard extends StatelessWidget {
                       children: [
                         TextSpan(
                           text:
-                              "${Formatter.formatPaymentType(posting.paymentType)} ",
+                              "${Formatter.formatPaymentType(widget.posting.paymentType)} ",
                         ),
                         TextSpan(
                           text:
-                              "${Formatter.formatNumberWithComma(posting.payAmount)} ",
+                              "${Formatter.formatNumberWithComma(widget.posting.payAmount)} ",
                           style: const TextStyle(
                             color: AppColor.secondary,
                             fontWeight: FontWeight.bold,
@@ -71,7 +91,7 @@ class JobPostCard extends StatelessWidget {
                         ),
                         TextSpan(
                           text:
-                              "원 · 업무내용 · ${Formatter.formatRelativeTime(posting.createdAt)}",
+                              "원 · 업무내용 · ${Formatter.formatRelativeTime(widget.posting.createdAt)}",
                         ),
                       ],
                     ),
@@ -87,26 +107,18 @@ class JobPostCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Icon(
-                            Icons.access_time,
-                            color: AppColor.gray[40],
-                            size: 14,
-                          ),
+                          SvgPicture.asset("assets/icons/clock.svg"),
                           const Gap(3),
                           Text(
-                            "${posting.schedules.first.startTime.substring(0, 5)} ~ ${posting.schedules.first.endTime.substring(0, 5)}",
+                            "${widget.posting.schedules.first.startTime.substring(0, 5)} ~ ${widget.posting.schedules.first.endTime.substring(0, 5)}",
                             style: Theme.of(context).textTheme.bodyMedium!
                                 .copyWith(color: AppColor.gray),
                           ),
                           const Gap(16),
-                          Icon(
-                            Icons.calendar_today_outlined,
-                            color: AppColor.gray[40],
-                            size: 14,
-                          ),
+                          SvgPicture.asset("assets/icons/calendar.svg"),
                           const Gap(3),
                           Text(
-                            posting.schedules.first.workingDays
+                            widget.posting.schedules.first.workingDays
                                 .map((e) => Formatter.formatDay(e))
                                 .join(", "),
                             style: Theme.of(context).textTheme.bodyMedium!

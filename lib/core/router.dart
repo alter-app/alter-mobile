@@ -39,6 +39,13 @@ final router = GoRouter(
       path: '/create-posting',
       builder: (context, state) => const PostingCreatePage(),
     ),
+    GoRoute(
+      path: '/postings/:id',
+      builder: (context, state) {
+        final postId = state.pathParameters['id']!;
+        return JobPostPage(postId: postId);
+      },
+    ),
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
       builder: (context, state, child) {
@@ -52,15 +59,9 @@ final router = GoRouter(
             GoRoute(
               path: '/postings',
               builder: (context, state) => const SearchPage(),
-              routes: [
-                GoRoute(
-                  path: '/:id',
-                  builder: (context, state) {
-                    final postId = state.pathParameters['id']!;
-                    return JobPostPage(postId: postId);
-                  },
-                ),
-              ],
+              // routes: [
+
+              // ],
             ),
           ],
         ),

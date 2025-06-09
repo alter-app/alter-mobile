@@ -47,4 +47,16 @@ abstract class PostingApiClient {
   Future<ApiResponse<List<Keyword>>> getKeywords(
     @Header('Authorization') String auth,
   );
+
+  @POST("/app/users/me/postings/favorites/{postingId}")
+  Future<ApiResponse> addScrap(
+    @Header('Authorization') String auth,
+    @Path('postingId') int postingId,
+  );
+
+  @DELETE("/app/users/me/postings/favorites/{postingId}")
+  Future<ApiResponse> deleteScrap(
+    @Header('Authorization') String auth,
+    @Path('postingId') int postingId,
+  );
 }

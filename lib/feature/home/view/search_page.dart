@@ -5,6 +5,7 @@ import 'package:alter/feature/home/view/posting_card.dart';
 import 'package:alter/feature/home/view_model/posting_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({super.key});
@@ -85,10 +86,13 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                         horizontal: 16,
                         vertical: 16,
                       ),
-                      suffixIcon: Icon(
-                        Icons.search,
-                        size: 24,
-                        color: AppColor.gray[20],
+                      suffixIcon: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: SvgPicture.asset(
+                          "assets/icons/search-md.svg",
+                          width: 24,
+                          height: 24,
+                        ),
                       ),
                     ),
                   ),
