@@ -11,6 +11,7 @@ part 'posting_detail_view_model.freezed.dart';
 abstract class PostingDetailState with _$PostingDetailState {
   const factory PostingDetailState({
     @Default(AsyncValue.loading()) AsyncValue<PostingDetail> posting,
+    @Default(false) bool isScrapped,
   }) = _PostingDetailState;
 }
 
@@ -62,5 +63,35 @@ class PostingDetailViewModel
     });
 
     state = state.copyWith(posting: postingAsync);
+  }
+
+  Future<void> toggleScrap() async {
+    final token = _accessToken;
+    final postingId = state.posting.when(
+      data: (data) {
+        return data.id;
+      },
+      error: (error, stackTrace) {
+        return null;
+      },
+      loading: () {
+        return null;
+      },
+    );
+
+    if (token == null) {
+      throw Exception("로그인이 필요합니다.");
+    }
+    if (postingId == null) {
+      throw Exception("로딩 실패");
+    }
+
+    if (state.isScrapped) {
+      _postingRepository.deleteScrap(token, postingId);
+      state = state.copyWith(isScrapped: false);
+    } else {
+      _postingRepository.addScrap(token, postingId);
+      state = state.copyWith(isScrapped: true);
+    }
   }
 }
