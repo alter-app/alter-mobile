@@ -1,26 +1,23 @@
 import 'package:alter/common/theme/app_theme.dart';
 import 'package:alter/common/util/%08formater/formatter.dart';
 import 'package:alter/feature/home/model/posting_response_model.dart';
+import 'package:alter/feature/home/view_model/scrap_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
-class JobPostCard extends StatefulWidget {
+class JobPostCard extends ConsumerWidget {
   final Posting posting;
 
   const JobPostCard({super.key, required this.posting});
 
   @override
-  State<JobPostCard> createState() => _JobPostCardState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    bool isScrapped =
+        ref.watch(scrapStatusNotifierProvider)[posting.id] ?? false;
 
-class _JobPostCardState extends State<JobPostCard> {
-  // TODO: 추후 posting에 들어있을 예정
-  bool isScrapped = false;
-
-  @override
-  Widget build(BuildContext context) {
     return Column(
       children: [
         Container(
@@ -30,12 +27,12 @@ class _JobPostCardState extends State<JobPostCard> {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: InkWell(
-              onTap: () => context.push('/postings/${widget.posting.id}'),
+              onTap: () => context.push('/postings/${posting.id}'),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "상호야! 너 이름 적고가!",
+                    posting.workspace.businessName,
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       color: AppColor.gray,
                       fontWeight: FontWeight.w500,
@@ -47,7 +44,7 @@ class _JobPostCardState extends State<JobPostCard> {
                     children: [
                       Expanded(
                         child: Text(
-                          widget.posting.title,
+                          posting.title,
                           style: Theme.of(
                             context,
                           ).textTheme.bodyLarge!.copyWith(
@@ -61,9 +58,9 @@ class _JobPostCardState extends State<JobPostCard> {
                       const Gap(25),
                       InkWell(
                         onTap: () {
-                          setState(() {
-                            isScrapped = !isScrapped;
-                          });
+                          ref
+                              .read(scrapStatusNotifierProvider.notifier)
+                              .toggleScrap(posting.id);
                         },
                         child: SvgPicture.asset(
                           isScrapped
@@ -79,11 +76,11 @@ class _JobPostCardState extends State<JobPostCard> {
                       children: [
                         TextSpan(
                           text:
-                              "${Formatter.formatPaymentType(widget.posting.paymentType)} ",
+                              "${Formatter.formatPaymentType(posting.paymentType)} ",
                         ),
                         TextSpan(
                           text:
-                              "${Formatter.formatNumberWithComma(widget.posting.payAmount)} ",
+                              "${Formatter.formatNumberWithComma(posting.payAmount)} ",
                           style: const TextStyle(
                             color: AppColor.secondary,
                             fontWeight: FontWeight.bold,
@@ -91,7 +88,7 @@ class _JobPostCardState extends State<JobPostCard> {
                         ),
                         TextSpan(
                           text:
-                              "원 · 업무내용 · ${Formatter.formatRelativeTime(widget.posting.createdAt)}",
+                              "원 · ${posting.keywords.first.name} · ${Formatter.formatRelativeTime(posting.createdAt)}",
                         ),
                       ],
                     ),
@@ -110,7 +107,7 @@ class _JobPostCardState extends State<JobPostCard> {
                           SvgPicture.asset("assets/icons/clock.svg"),
                           const Gap(3),
                           Text(
-                            "${widget.posting.schedules.first.startTime.substring(0, 5)} ~ ${widget.posting.schedules.first.endTime.substring(0, 5)}",
+                            "${posting.schedules.first.startTime.substring(0, 5)} ~ ${posting.schedules.first.endTime.substring(0, 5)}",
                             style: Theme.of(context).textTheme.bodyMedium!
                                 .copyWith(color: AppColor.gray),
                           ),
@@ -118,7 +115,7 @@ class _JobPostCardState extends State<JobPostCard> {
                           SvgPicture.asset("assets/icons/calendar.svg"),
                           const Gap(3),
                           Text(
-                            widget.posting.schedules.first.workingDays
+                            posting.schedules.first.workingDays
                                 .map((e) => Formatter.formatDay(e))
                                 .join(", "),
                             style: Theme.of(context).textTheme.bodyMedium!
@@ -126,41 +123,41 @@ class _JobPostCardState extends State<JobPostCard> {
                           ),
                         ],
                       ),
-                      Container(
-                        height: 24,
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withValues(alpha: 0.3),
-                              offset: const Offset(1, 1),
-                              blurRadius: 3,
-                            ),
-                          ],
-                        ),
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.thumb_up_alt_outlined,
-                              color: Colors.green,
-                              size: 12, // 아이콘 크기 줄임
-                            ),
-                            SizedBox(width: 4),
-                            Text(
-                              "999+",
-                              style: TextStyle(
-                                fontSize: 14, // 텍스트 크기 줄임
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      // Container(
+                      //   height: 24,
+                      //   padding: const EdgeInsets.symmetric(horizontal: 8),
+                      //   decoration: BoxDecoration(
+                      //     color: Colors.white,
+                      //     borderRadius: BorderRadius.circular(12),
+                      //     boxShadow: [
+                      //       BoxShadow(
+                      //         color: Colors.grey.withValues(alpha: 0.3),
+                      //         offset: const Offset(1, 1),
+                      //         blurRadius: 3,
+                      //       ),
+                      //     ],
+                      //   ),
+                      //   child: const Row(
+                      //     mainAxisSize: MainAxisSize.min,
+                      //     crossAxisAlignment: CrossAxisAlignment.center,
+                      //     children: [
+                      //       Icon(
+                      //         Icons.thumb_up_alt_outlined,
+                      //         color: Colors.green,
+                      //         size: 12, // 아이콘 크기 줄임
+                      //       ),
+                      //       SizedBox(width: 4),
+                      //       Text(
+                      //         "999+",
+                      //         style: TextStyle(
+                      //           fontSize: 14, // 텍스트 크기 줄임
+                      //           fontWeight: FontWeight.w500,
+                      //           color: Colors.black,
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                   const Gap(15),

@@ -3,6 +3,7 @@ import 'package:alter/common/util/%08formater/formatter.dart';
 import 'package:alter/common/util/logger.dart';
 import 'package:alter/core/env.dart';
 import 'package:alter/feature/home/view_model/posting_detail_view_model.dart';
+import 'package:alter/feature/home/view_model/scrap_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
@@ -82,6 +83,8 @@ class _JobPostPageState extends ConsumerState<JobPostPage> {
               ),
               icon: iconImage,
             );
+            bool isScrapped =
+                ref.watch(scrapStatusNotifierProvider)[posting.id] ?? false;
             return Column(
               children: [
                 Expanded(
@@ -478,11 +481,11 @@ class _JobPostPageState extends ConsumerState<JobPostPage> {
                                     ),
                                   ),
                                   const Gap(24),
-                                  // 상세 이미지
+                                  // 상세
                                   Container(
                                     width: double.infinity,
                                     constraints: const BoxConstraints(
-                                      minHeight: 150,
+                                      minHeight: 100,
                                     ),
                                     child: Text(
                                       posting.description,
@@ -558,7 +561,7 @@ class _JobPostPageState extends ConsumerState<JobPostPage> {
                               .toggleScrap();
                         },
                         child: SvgPicture.asset(
-                          state.isScrapped
+                          isScrapped
                               ? "assets/icons/bookmark_filled.svg"
                               : "assets/icons/bookmark_outlined.svg",
                         ),

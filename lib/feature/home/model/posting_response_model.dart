@@ -65,6 +65,7 @@ abstract class PostingDetail with _$PostingDetail {
     required DateTime createdAt,
     required List<Keyword> keywords,
     required List<Schedule> schedules,
+    required bool scrapped,
   }) = _PostingDetail;
 
   factory PostingDetail.fromJson(Map<String, dynamic> json) =>

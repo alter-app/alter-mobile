@@ -3,6 +3,7 @@ import 'package:alter/core/result.dart';
 import 'package:alter/feature/auth/view_model/login_view_model.dart';
 import 'package:alter/feature/home/model/posting_response_model.dart';
 import 'package:alter/feature/home/repository/posting_repository.dart';
+import 'package:alter/feature/home/view_model/scrap_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -60,6 +61,14 @@ class PostingListViewModel extends Notifier<PostingListState> {
       final result = await _postingRepository.getPostings(token, null);
       switch (result) {
         case Success(data: final data):
+          final Map<int, bool> initialScrapStatuses = {};
+          for (var posting in data.data) {
+            initialScrapStatuses[posting.id] = posting.scrapped;
+          }
+          ref
+              .read(scrapStatusNotifierProvider.notifier)
+              .setScrapStatuses(initialScrapStatuses);
+
           // 상태 업데이트 (cursor, hasMore)
           state = state.copyWith(
             cursor: data.page.cursor,
@@ -88,6 +97,14 @@ class PostingListViewModel extends Notifier<PostingListState> {
         case Success(data: final data):
           final newData = data.data;
           final currentData = state.postings.value ?? <Posting>[];
+
+          final Map<int, bool> newScrapStatuses = {};
+          for (var posting in newData) {
+            newScrapStatuses[posting.id] = posting.scrapped;
+          }
+          ref
+              .read(scrapStatusNotifierProvider.notifier)
+              .setScrapStatuses(newScrapStatuses);
 
           // 상태 업데이트
           state = state.copyWith(
