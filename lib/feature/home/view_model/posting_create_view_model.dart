@@ -79,6 +79,7 @@ class PostingCreateViewModel extends Notifier<PostingCreateState> {
 
     final schedules =
         state.schedules.map((schedule) {
+          //TODO: 추후 Schedule 관련 정리가 필요할 듯
           return Schedule(
             workingDays:
                 schedule.selectedDays
