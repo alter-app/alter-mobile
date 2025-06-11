@@ -59,4 +59,11 @@ abstract class PostingApiClient {
     @Header('Authorization') String auth,
     @Path('postingId') int postingId,
   );
+
+  @POST("/app/postings/apply/{postingId}")
+  Future<ApiResponse> applyJob(
+    @Header('Authorization') String auth,
+    @Path('postingId') int postingId,
+    @Body() ApplyRequest body,
+  );
 }
