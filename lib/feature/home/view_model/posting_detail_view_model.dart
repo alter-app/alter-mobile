@@ -3,6 +3,7 @@ import 'package:alter/feature/auth/view_model/login_view_model.dart';
 import 'package:alter/feature/home/model/posting_request_model.dart';
 import 'package:alter/feature/home/model/posting_response_model.dart';
 import 'package:alter/feature/home/repository/posting_repository.dart';
+import 'package:alter/feature/home/view_model/scrap_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -12,7 +13,6 @@ part 'posting_detail_view_model.freezed.dart';
 abstract class PostingDetailState with _$PostingDetailState {
   const factory PostingDetailState({
     @Default(AsyncValue.loading()) AsyncValue<PostingDetail> posting,
-    @Default(false) bool isScrapped,
     int? selectedScheduleId,
     @Default("") String selfIntroduction,
   }) = _PostingDetailState;
@@ -62,6 +62,10 @@ class PostingDetailViewModel extends FamilyNotifier<PostingDetailState, int> {
       );
       switch (result) {
         case Success(data: final data):
+          ref
+              .read(scrapStatusNotifierProvider.notifier)
+              .setScrapStatus(data.id, data.scrapped);
+
           return data;
         case Failure(error: final error):
           throw error;
@@ -94,19 +98,11 @@ class PostingDetailViewModel extends FamilyNotifier<PostingDetailState, int> {
       throw Exception("로딩 실패");
     }
 
-    Result result;
-    final before = state.isScrapped;
-    if (state.isScrapped) {
-      result = await _postingRepository.deleteScrap(token, postingId);
-    } else {
-      result = await _postingRepository.addScrap(token, postingId);
-    }
-    switch (result) {
-      case Success():
-        state = state.copyWith(isScrapped: !before);
-      default:
-        break;
-    }
+    final success = await ref
+        .read(scrapStatusNotifierProvider.notifier)
+        .toggleScrap(postingId);
+
+    // TODO: 실패시 피드백 필요
   }
 
   Future<bool> applyJob(int scheduleId, String description) async {

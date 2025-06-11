@@ -59,7 +59,7 @@ class PostingCreateViewModel extends Notifier<PostingCreateState> {
       case Success(data: final data):
         state = state.copyWith(keywords: data);
       default:
-        // 예외?
+        // TODO: 예외처리
         break;
     }
   }
