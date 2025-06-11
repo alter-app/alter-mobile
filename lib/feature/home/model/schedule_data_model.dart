@@ -1,4 +1,4 @@
-import 'package:alter/common/widget/day_selector.dart';
+import 'package:alter/feature/my_job/view/widget/day_selector.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'schedule_data_model.freezed.dart';

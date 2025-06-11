@@ -1,9 +1,9 @@
 import 'package:alter/common/theme/app_theme.dart';
 import 'package:alter/common/util/logger.dart';
-import 'package:alter/common/widget/day_selector.dart';
+import 'package:alter/feature/my_job/view/widget/day_selector.dart';
 import 'package:alter/common/widget/time_period_selector.dart';
 import 'package:alter/feature/home/model/schedule_data_model.dart';
-import 'package:alter/feature/home/view_model/posting_create_view_model.dart';
+import 'package:alter/feature/my_job/view_model/posting_create_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';

@@ -5,7 +5,7 @@ import 'package:alter/feature/auth/view/sign_up/sign_up_last_page.dart';
 import 'package:alter/feature/auth/view/sign_up/sign_up_page.dart';
 import 'package:alter/feature/home/view/apply_page.dart';
 //import 'package:alter/feature/home/view/home_page.dart';
-import 'package:alter/feature/home/view/posting_create_page.dart';
+import 'package:alter/feature/my_job/view/posting_create_page.dart';
 import 'package:alter/feature/home/view/posting_page.dart';
 import 'package:alter/feature/home/view/search_page.dart';
 import 'package:alter/feature/my_job/view/my_job_page.dart';

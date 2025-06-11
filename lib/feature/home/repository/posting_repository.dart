@@ -1,9 +1,10 @@
 import 'package:alter/common/util/logger.dart';
 import 'package:alter/core/api_response.dart';
 import 'package:alter/core/result.dart';
-import 'package:alter/feature/home/model/posting_request_model.dart';
+import 'package:alter/feature/home/model/apply_request_model.dart';
 import 'package:alter/feature/home/model/posting_response_model.dart';
 import 'package:alter/feature/home/service/posting_api.dart';
+import 'package:alter/feature/my_job/model/posting_request_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

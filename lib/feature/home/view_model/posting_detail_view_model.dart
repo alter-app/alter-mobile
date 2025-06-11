@@ -1,6 +1,6 @@
 import 'package:alter/core/result.dart';
 import 'package:alter/feature/auth/view_model/login_view_model.dart';
-import 'package:alter/feature/home/model/posting_request_model.dart';
+import 'package:alter/feature/home/model/apply_request_model.dart';
 import 'package:alter/feature/home/model/posting_response_model.dart';
 import 'package:alter/feature/home/repository/posting_repository.dart';
 import 'package:alter/feature/home/view_model/scrap_view_model.dart';
