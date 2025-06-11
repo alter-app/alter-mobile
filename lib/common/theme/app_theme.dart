@@ -64,7 +64,7 @@ class AppTheme {
         height: 1.5,
         letterSpacing: -1.0,
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       // 기본 입력폼
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),

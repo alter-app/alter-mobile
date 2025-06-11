@@ -32,11 +32,13 @@ class _PostingCreatePageState extends ConsumerState<PostingCreatePage> {
   String? _keywordsErrorText;
   String? _scheduleErrorText;
   String? _payAmountErrorText;
+  String? _descriptionErrorText;
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _companyNameController = TextEditingController();
   final TextEditingController _payAmountController = TextEditingController();
   final TextEditingController _worktimeController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
   @override
   void initState() {
@@ -53,6 +55,9 @@ class _PostingCreatePageState extends ConsumerState<PostingCreatePage> {
   void dispose() {
     _titleController.dispose();
     _payAmountController.dispose();
+    _companyNameController.dispose();
+    _worktimeController.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
@@ -123,7 +128,7 @@ class _PostingCreatePageState extends ConsumerState<PostingCreatePage> {
                           if (_titleErrorText != null)
                             Row(
                               children: [
-                                const Gap(4),
+                                const Gap(8),
                                 Text(
                                   _titleErrorText!,
                                   style: Theme.of(
@@ -194,7 +199,7 @@ class _PostingCreatePageState extends ConsumerState<PostingCreatePage> {
                           if (_keywordsErrorText != null)
                             Row(
                               children: [
-                                const Gap(4),
+                                const Gap(8),
                                 Text(
                                   _keywordsErrorText!,
                                   style: Theme.of(
@@ -331,7 +336,7 @@ class _PostingCreatePageState extends ConsumerState<PostingCreatePage> {
                           if (_scheduleErrorText != null)
                             Row(
                               children: [
-                                const Gap(4),
+                                const Gap(8),
                                 Text(
                                   _scheduleErrorText!,
                                   style: Theme.of(
@@ -422,7 +427,7 @@ class _PostingCreatePageState extends ConsumerState<PostingCreatePage> {
                           const Gap(4),
                           Row(
                             children: [
-                              const Gap(4),
+                              const Gap(8),
                               Text(
                                 _payAmountErrorText != null
                                     ? _payAmountErrorText!
@@ -538,6 +543,30 @@ class _PostingCreatePageState extends ConsumerState<PostingCreatePage> {
                         ],
                       ),
                     ),
+                    const Gap(2),
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      color: AppColor.white,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          makeHeadLine(context, title: "상세내용"),
+                          const Gap(24),
+                          TextField(
+                            controller: _descriptionController,
+                            maxLines: 4,
+                            maxLength: 200,
+                            decoration: InputDecoration(
+                              errorText: _descriptionErrorText,
+                            ),
+                            onChanged:
+                                (value) => setState(() {
+                                  _descriptionErrorText = null;
+                                }),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -592,6 +621,12 @@ class _PostingCreatePageState extends ConsumerState<PostingCreatePage> {
                       _payAmountErrorText = "급여가 최저시급을 만족하지 못합니다.";
                     });
                     isValid = false;
+                  }
+                  // 상세 내용 유효성 검사
+                  if (_descriptionController.text.trim().isEmpty) {
+                    setState(() {
+                      _descriptionErrorText = "상세내용을 입력해주세요.";
+                    });
                   }
                   Log.d("isValid: $isValid");
                   if (isValid) {
