@@ -3,7 +3,8 @@ import 'package:alter/feature/auth/view/login_page.dart';
 import 'package:alter/feature/auth/view/sign_up/sign_up_info_page.dart';
 import 'package:alter/feature/auth/view/sign_up/sign_up_last_page.dart';
 import 'package:alter/feature/auth/view/sign_up/sign_up_page.dart';
-import 'package:alter/feature/home/view/home_page.dart';
+import 'package:alter/feature/home/view/apply_page.dart';
+//import 'package:alter/feature/home/view/home_page.dart';
 import 'package:alter/feature/home/view/posting_create_page.dart';
 import 'package:alter/feature/home/view/posting_page.dart';
 import 'package:alter/feature/home/view/search_page.dart';
@@ -42,10 +43,28 @@ final router = GoRouter(
     GoRoute(
       path: '/postings/:id',
       builder: (context, state) {
-        final postId = state.pathParameters['id']!;
+        final postId = int.tryParse(state.pathParameters['id']!);
+        if (postId == null) {
+          // TODO: 에러 페이지 작성 필요
+          return const SearchPage();
+        }
         return JobPostPage(postId: postId);
       },
+      routes: [
+        GoRoute(
+          path: '/apply',
+          builder: (context, state) {
+            final postId = int.tryParse(state.pathParameters['id']!);
+            if (postId == null) {
+              // TODO: 에러 페이지 작성 필요
+              return const SearchPage();
+            }
+            return ApplyPage(postId: postId);
+          },
+        ),
+      ],
     ),
+
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
       builder: (context, state, child) {
@@ -54,14 +73,11 @@ final router = GoRouter(
       routes: [
         GoRoute(
           path: '/',
-          builder: (context, state) => const HomePage(),
+          builder: (context, state) => const SearchPage(),
           routes: [
             GoRoute(
               path: '/postings',
               builder: (context, state) => const SearchPage(),
-              // routes: [
-
-              // ],
             ),
           ],
         ),

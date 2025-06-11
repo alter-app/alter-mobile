@@ -36,6 +36,8 @@ abstract class Posting with _$Posting {
     required DateTime createdAt,
     required List<Keyword> keywords,
     required List<Schedule> schedules,
+    required WorkSpace workspace,
+    required bool scrapped,
   }) = _Posting;
 
   factory Posting.fromJson(Map<String, dynamic> json) =>
@@ -43,10 +45,19 @@ abstract class Posting with _$Posting {
 }
 
 @freezed
+abstract class WorkSpace with _$WorkSpace {
+  const factory WorkSpace({required int id, required String businessName}) =
+      _WorkSpace;
+
+  factory WorkSpace.fromJson(Map<String, dynamic> json) =>
+      _$WorkSpaceFromJson(json);
+}
+
+@freezed
 abstract class PostingDetail with _$PostingDetail {
   const factory PostingDetail({
     required int id,
-    required WorkSpace workspace,
+    required WorkSpaceDetail workspace,
     required String title,
     required String description,
     required int payAmount,
@@ -71,6 +82,7 @@ abstract class Keyword with _$Keyword {
 @freezed
 abstract class Schedule with _$Schedule {
   const factory Schedule({
+    int? id,
     required List<String> workingDays,
     required String startTime,
     required String endTime,
@@ -83,8 +95,8 @@ abstract class Schedule with _$Schedule {
 }
 
 @freezed
-abstract class WorkSpace with _$WorkSpace {
-  const factory WorkSpace({
+abstract class WorkSpaceDetail with _$WorkSpaceDetail {
+  const factory WorkSpaceDetail({
     required int id,
     required String name,
     required String fullAddress,
@@ -92,8 +104,8 @@ abstract class WorkSpace with _$WorkSpace {
     required String town,
     required double latitude,
     required double longitude,
-  }) = _WorkSpace;
+  }) = _WorkSpaceDetail;
 
-  factory WorkSpace.fromJson(Map<String, dynamic> json) =>
-      _$WorkSpaceFromJson(json);
+  factory WorkSpaceDetail.fromJson(Map<String, dynamic> json) =>
+      _$WorkSpaceDetailFromJson(json);
 }

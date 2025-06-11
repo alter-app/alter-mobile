@@ -9,10 +9,11 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class JobPostPage extends ConsumerStatefulWidget {
-  final String postId;
+  final int postId;
   const JobPostPage({super.key, required this.postId});
 
   @override
@@ -280,7 +281,7 @@ class _JobPostPageState extends ConsumerState<JobPostPage> {
                                       ),
                                       const Gap(40),
                                       Text(
-                                        "${schedules.first.startTime.substring(0, 5)} ~ ${schedules.first.endTime.substring(0, 5)}",
+                                        "${schedules.first.startTime.substring(0, 5)}  ~  ${schedules.first.endTime.substring(0, 5)}",
                                         style: Theme.of(
                                           context,
                                         ).textTheme.bodyMedium!.copyWith(
@@ -565,7 +566,10 @@ class _JobPostPageState extends ConsumerState<JobPostPage> {
                       const Gap(20),
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () async {},
+                          onPressed: () {
+                            // apply 뒤에는 스케쥴 아이디
+                            context.push('/postings/${posting.id}/apply');
+                          },
                           child: Center(
                             child: Text(
                               "지원하기",

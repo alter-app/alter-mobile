@@ -135,4 +135,25 @@ class PostingRepository {
       return Result.failure(Exception("요청 실패 : 스크랩 삭제"));
     }
   }
+
+  Future<Result> applyJob(String auth, int postingId, ApplyRequest body) async {
+    try {
+      final response = await postingApi.applyJob(
+        "Bearer $auth",
+        postingId,
+        body,
+      );
+
+      return Result.success(response);
+    } on DioException catch (e) {
+      final status = e.response?.statusCode;
+      final response = e.response?.data;
+      Log.e("[$status]: ${e.type} response: $response");
+
+      return Result.failure(e);
+    } catch (e) {
+      Log.e(e.toString());
+      return Result.failure(Exception("요청 실패 : 공고 지원"));
+    }
+  }
 }

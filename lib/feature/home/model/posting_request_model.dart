@@ -19,3 +19,14 @@ abstract class PostingRequest with _$PostingRequest {
   factory PostingRequest.fromJson(Map<String, dynamic> json) =>
       _$PostingRequestFromJson(json);
 }
+
+@freezed
+abstract class ApplyRequest with _$ApplyRequest {
+  const factory ApplyRequest({
+    required int postingScheduleId,
+    required String description,
+  }) = _ApplyRequest;
+
+  factory ApplyRequest.fromJson(Map<String, dynamic> json) =>
+      _$ApplyRequestFromJson(json);
+}
