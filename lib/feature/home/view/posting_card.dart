@@ -32,7 +32,7 @@ class JobPostCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "상호야! 너 이름 적고가!",
+                    posting.workspace.businessName,
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       color: AppColor.gray,
                       fontWeight: FontWeight.w500,
@@ -88,7 +88,7 @@ class JobPostCard extends ConsumerWidget {
                         ),
                         TextSpan(
                           text:
-                              "원 · 업무내용 · ${Formatter.formatRelativeTime(posting.createdAt)}",
+                              "원 · ${posting.keywords.first.name} · ${Formatter.formatRelativeTime(posting.createdAt)}",
                         ),
                       ],
                     ),
@@ -123,41 +123,41 @@ class JobPostCard extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      Container(
-                        height: 24,
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withValues(alpha: 0.3),
-                              offset: const Offset(1, 1),
-                              blurRadius: 3,
-                            ),
-                          ],
-                        ),
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.thumb_up_alt_outlined,
-                              color: Colors.green,
-                              size: 12, // 아이콘 크기 줄임
-                            ),
-                            SizedBox(width: 4),
-                            Text(
-                              "999+",
-                              style: TextStyle(
-                                fontSize: 14, // 텍스트 크기 줄임
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      // Container(
+                      //   height: 24,
+                      //   padding: const EdgeInsets.symmetric(horizontal: 8),
+                      //   decoration: BoxDecoration(
+                      //     color: Colors.white,
+                      //     borderRadius: BorderRadius.circular(12),
+                      //     boxShadow: [
+                      //       BoxShadow(
+                      //         color: Colors.grey.withValues(alpha: 0.3),
+                      //         offset: const Offset(1, 1),
+                      //         blurRadius: 3,
+                      //       ),
+                      //     ],
+                      //   ),
+                      //   child: const Row(
+                      //     mainAxisSize: MainAxisSize.min,
+                      //     crossAxisAlignment: CrossAxisAlignment.center,
+                      //     children: [
+                      //       Icon(
+                      //         Icons.thumb_up_alt_outlined,
+                      //         color: Colors.green,
+                      //         size: 12, // 아이콘 크기 줄임
+                      //       ),
+                      //       SizedBox(width: 4),
+                      //       Text(
+                      //         "999+",
+                      //         style: TextStyle(
+                      //           fontSize: 14, // 텍스트 크기 줄임
+                      //           fontWeight: FontWeight.w500,
+                      //           color: Colors.black,
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                   const Gap(15),

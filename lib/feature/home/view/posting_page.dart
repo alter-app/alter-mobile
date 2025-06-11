@@ -481,11 +481,11 @@ class _JobPostPageState extends ConsumerState<JobPostPage> {
                                     ),
                                   ),
                                   const Gap(24),
-                                  // 상세 이미지
+                                  // 상세
                                   Container(
                                     width: double.infinity,
                                     constraints: const BoxConstraints(
-                                      minHeight: 150,
+                                      minHeight: 100,
                                     ),
                                     child: Text(
                                       posting.description,
