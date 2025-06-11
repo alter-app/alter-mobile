@@ -1,12 +1,12 @@
 import 'package:alter/common/util/extension.dart';
 import 'package:alter/common/util/logger.dart';
-import 'package:alter/common/widget/day_selector.dart';
+import 'package:alter/feature/my_job/view/widget/day_selector.dart';
 import 'package:alter/core/result.dart';
 import 'package:alter/feature/auth/view_model/login_view_model.dart';
-import 'package:alter/feature/home/model/posting_request_model.dart';
 import 'package:alter/feature/home/model/posting_response_model.dart';
 import 'package:alter/feature/home/model/schedule_data_model.dart';
 import 'package:alter/feature/home/repository/posting_repository.dart';
+import 'package:alter/feature/my_job/model/posting_request_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
