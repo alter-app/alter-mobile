@@ -114,7 +114,7 @@ class PostingListViewModel extends Notifier<PostingListState> {
 
           return [...currentData, ...newData];
         case Failure(error: final error):
-          throw Exception(error.toString());
+          throw error;
         default:
           throw Exception("알 수 없는 오류 발생");
       }
