@@ -103,6 +103,28 @@ class PostingRepository {
     }
   }
 
+  Future<Result<ScrapResponse>> getScraps(String auth, String? cursor) async {
+    try {
+      final httpResponse = await postingApi.getScraps(
+        "Bearer $auth",
+        cursor,
+        10,
+      );
+      final response = httpResponse.data;
+
+      return Result.success(response);
+    } on DioException catch (e) {
+      final status = e.response?.statusCode;
+      final response = e.response?.data;
+      Log.e("[$status] response: $response");
+
+      return Result.failure(e);
+    } catch (e) {
+      Log.e(e.toString());
+      return Result.failure(Exception("요청 실패 : 스크랩 조회"));
+    }
+  }
+
   Future<Result> addScrap(String auth, int postingId) async {
     try {
       final response = await postingApi.addScrap("Bearer $auth", postingId);

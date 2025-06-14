@@ -49,6 +49,13 @@ abstract class PostingApiClient {
     @Header('Authorization') String auth,
   );
 
+  @GET('/app/users/me/postings/favorites')
+  Future<HttpResponse<ScrapResponse>> getScraps(
+    @Header('Authorization') String auth,
+    @Query('cursor') String? cursor,
+    @Query('pageSize') int pageSize,
+  );
+
   @POST("/app/users/me/postings/favorites/{postingId}")
   Future<ApiResponse> addScrap(
     @Header('Authorization') String auth,

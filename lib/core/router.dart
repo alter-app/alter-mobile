@@ -10,6 +10,7 @@ import 'package:alter/feature/my_job/view/posting_create_page.dart';
 import 'package:alter/feature/home/view/posting_page.dart';
 import 'package:alter/feature/home/view/search_page.dart';
 import 'package:alter/feature/my_job/view/my_job_page.dart';
+import 'package:alter/feature/profile/view/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -96,6 +97,10 @@ final router = GoRouter(
         GoRoute(
           path: '/my-job',
           builder: (context, state) => const MyJobPage(),
+        ),
+        GoRoute(
+          path: '/profile',
+          builder: (context, state) => const ProfilePage(),
         ),
       ],
     ),
