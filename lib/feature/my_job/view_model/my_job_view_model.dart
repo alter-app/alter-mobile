@@ -118,4 +118,65 @@ class MyJobListViewModel extends Notifier<MyJobListState> {
     state = state.copyWith(hasMore: false, page: 1);
     await _fetchInitial();
   }
+
+  Future<void> cancelApplication(int applicationId) async {
+    final currentApplications = state.applications.value;
+
+    if (currentApplications == null) {
+      Log.w("지원 취소: 지원서 데이터가 없습니다.");
+      return;
+    }
+
+    final token = _accessToken;
+    if (token == null) {
+      Log.e("지원 취소: accessToken이 null 입니다. 로그인이 필요합니다.");
+      state = state.copyWith(
+        applications: AsyncValue.error("로그인이 필요합니다.", StackTrace.current),
+      );
+      return;
+    }
+
+    // 낙관적 업데이트
+    final List<Application> optimisticUpdatedList =
+        currentApplications.map((app) {
+          if (app.id == applicationId) {
+            return app.copyWith(status: "CANCELLED");
+          }
+          return app;
+        }).toList();
+
+    // UI에 낙관적 업데이트를 적용
+    state = state.copyWith(
+      applications: AsyncValue.data(optimisticUpdatedList),
+    );
+    Log.d("낙관적 업데이트 적용 지원서 $applicationId 상태 : CANCELLED");
+
+    final result = await _myJobRepository.updateApplyStatus(
+      token,
+      applicationId,
+      const ApplyStatusUpdateRequest(status: "CANCELLED"),
+    );
+
+    switch (result) {
+      case Success():
+        Log.d("지원 취소: 성공");
+        break;
+      case Failure(error: final error):
+        Log.e("지원 취소: 실패 application $applicationId: $error");
+        state = state.copyWith(
+          applications: AsyncValue.data(currentApplications),
+        );
+        // 사용자에게 에러 메시지 표시
+        // ref.read(snackbarProvider.notifier).showError("지원 취소 실패: ${error.toString()}");
+        break;
+      default:
+        Log.e("알수없는 에러 발생 cancelApplication: $applicationId");
+        state = state.copyWith(
+          applications: AsyncValue.error(
+            "알 수 없는 오류가 발생했습니다.",
+            StackTrace.current,
+          ),
+        );
+    }
+  }
 }

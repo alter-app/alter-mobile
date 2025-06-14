@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
 enum ApplyStatus {
   submitted("SUBMITTED", "지원함"),
@@ -35,7 +36,9 @@ class MyJobCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        context.push('/my-job/${application.id}');
+      },
       child: Container(
         height: 132,
         color: AppColor.white,

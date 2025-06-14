@@ -4,6 +4,7 @@ import 'package:alter/feature/auth/view/sign_up/sign_up_info_page.dart';
 import 'package:alter/feature/auth/view/sign_up/sign_up_last_page.dart';
 import 'package:alter/feature/auth/view/sign_up/sign_up_page.dart';
 import 'package:alter/feature/home/view/apply_page.dart';
+import 'package:alter/feature/my_job/view/application_detail_page.dart';
 //import 'package:alter/feature/home/view/home_page.dart';
 import 'package:alter/feature/my_job/view/posting_create_page.dart';
 import 'package:alter/feature/home/view/posting_page.dart';
@@ -64,7 +65,18 @@ final router = GoRouter(
         ),
       ],
     ),
-
+    GoRoute(
+      path: '/my-job/:applicationId',
+      builder: (context, state) {
+        final applicationId = int.tryParse(
+          state.pathParameters['applicationId']!,
+        );
+        if (applicationId == null) {
+          return const MyJobPage();
+        }
+        return ApplicationDetailPage(applicationId: applicationId);
+      },
+    ),
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
       builder: (context, state, child) {

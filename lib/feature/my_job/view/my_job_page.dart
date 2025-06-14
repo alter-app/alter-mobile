@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:alter/common/theme/app_theme.dart';
-import 'package:alter/common/util/%08formater/formatter.dart';
-import 'package:alter/feature/my_job/model/my_job_response_model.dart';
 import 'package:alter/feature/my_job/view/widget/my_job_card.dart';
 import 'package:alter/feature/my_job/view_model/my_job_view_model.dart';
 import 'package:flutter/material.dart';
@@ -85,81 +83,108 @@ class _MyJobPageState extends ConsumerState<MyJobPage> {
                 onRefresh:
                     () =>
                         ref.read(myJobListViewModelProvider.notifier).refresh(),
-                child: state.applications.when(
-                  data: (applications) {
-                    if (applications.isEmpty) {
-                      return const Center(child: Text("지원한 아르바이트가 없어요."));
-                    }
-                    return ListView.separated(
-                      itemCount: applications.length + (state.hasMore ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        // 실제 데이터 아이템
-                        if (index < applications.length) {
-                          final application = applications[index];
-                          return MyJobCard(application: application);
-                        }
-                        // 무한 스크롤 로딩 인디케이터
-                        else {
-                          return const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            child: Center(child: CircularProgressIndicator()),
-                          );
-                        }
-                      },
-                      separatorBuilder: (context, index) => const Gap(2),
-                    );
-                  },
-                  error:
-                      (error, stackTrace) => Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.error_outline,
-                              size: 64,
-                              color: Colors.grey[400],
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              "에러가 발생했습니다",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[700],
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              error.toString(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                            const SizedBox(height: 24),
-                            ElevatedButton.icon(
-                              onPressed:
-                                  () =>
-                                      ref
-                                          .read(
-                                            myJobListViewModelProvider.notifier,
-                                          )
-                                          .initialize(),
-                              icon: const Icon(Icons.refresh),
-                              label: const Text("다시 시도"),
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 24,
-                                  vertical: 12,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                child: Column(
+                  children: [
+                    Container(
+                      color: AppColor.white,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 20,
                       ),
-                  loading:
-                      () => const Center(child: CircularProgressIndicator()),
+                      child: Row(
+                        children: [
+                          Text(
+                            "지원한 알바",
+                            style: Theme.of(context).textTheme.displayLarge,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: state.applications.when(
+                        data: (applications) {
+                          if (applications.isEmpty) {
+                            return const Center(child: Text("지원한 아르바이트가 없어요."));
+                          }
+                          return ListView.separated(
+                            itemCount:
+                                applications.length + (state.hasMore ? 1 : 0),
+                            itemBuilder: (context, index) {
+                              // 실제 데이터 아이템
+                              if (index < applications.length) {
+                                final application = applications[index];
+                                return MyJobCard(application: application);
+                              }
+                              // 무한 스크롤 로딩 인디케이터
+                              else {
+                                return const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 20),
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                              }
+                            },
+                            separatorBuilder: (context, index) => const Gap(2),
+                          );
+                        },
+                        error:
+                            (error, stackTrace) => Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.error_outline,
+                                    size: 64,
+                                    color: Colors.grey[400],
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    "에러가 발생했습니다",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    error.toString(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 24),
+                                  ElevatedButton.icon(
+                                    onPressed:
+                                        () =>
+                                            ref
+                                                .read(
+                                                  myJobListViewModelProvider
+                                                      .notifier,
+                                                )
+                                                .initialize(),
+                                    icon: const Icon(Icons.refresh),
+                                    label: const Text("다시 시도"),
+                                    style: ElevatedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 24,
+                                        vertical: 12,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        loading:
+                            () => const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

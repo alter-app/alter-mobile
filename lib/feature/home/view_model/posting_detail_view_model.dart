@@ -35,7 +35,7 @@ class PostingDetailViewModel extends FamilyNotifier<PostingDetailState, int> {
   }
 
   String? get _accessToken {
-    final loginState = ref.watch(loginViewModelProvider);
+    final loginState = ref.read(loginViewModelProvider);
     return loginState.token?.accessToken;
   }
 
