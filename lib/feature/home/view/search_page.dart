@@ -60,7 +60,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
     return Scaffold(
       body: SafeArea(
-        bottom: false,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(

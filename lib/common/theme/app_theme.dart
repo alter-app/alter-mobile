@@ -120,6 +120,23 @@ class AppTheme {
       visualDensity: VisualDensity.compact,
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     ),
+    dialogTheme: DialogTheme(
+      backgroundColor: AppColor.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      titleTextStyle: const TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        height: 1.5,
+        letterSpacing: -1.0,
+        color: AppColor.text,
+      ),
+      contentTextStyle: const TextStyle(
+        fontSize: 16,
+        height: 1.5,
+        letterSpacing: -1.0,
+        color: AppColor.text,
+      ),
+    ),
   );
 
   static final TextTheme _textTheme = const TextTheme(

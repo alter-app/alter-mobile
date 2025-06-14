@@ -101,6 +101,7 @@ abstract class WorkSpaceDetail with _$WorkSpaceDetail {
     required int id,
     required String name,
     required String fullAddress,
+    required String province,
     required String district,
     required String town,
     required double latitude,
