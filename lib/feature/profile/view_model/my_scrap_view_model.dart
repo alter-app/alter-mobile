@@ -49,8 +49,10 @@ class MyScrapListViewModel extends Notifier<MyScrapListState> {
       return;
     }
 
-    state = state.copyWith(scrappedPostings: const AsyncValue.loading());
-
+    if (state.scrappedPostings.value == null ||
+        state.scrappedPostings.hasError) {
+      state = state.copyWith(scrappedPostings: const AsyncValue.loading());
+    }
     final result = await _postingRepository.getScraps(token, null);
 
     switch (result) {

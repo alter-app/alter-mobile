@@ -22,10 +22,10 @@ abstract class Certificate with _$Certificate {
     required int id,
     required String type,
     required String certificateName,
+    required String certificateId,
     required String publisherName,
     required DateTime issuedAt,
-    int? certificateRecordId,
-    DateTime? expiredAt,
+    DateTime? expiresAt,
     DateTime? updatedAt,
   }) = _Certificate;
 

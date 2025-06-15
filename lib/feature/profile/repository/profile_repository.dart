@@ -1,5 +1,6 @@
 import 'package:alter/common/util/logger.dart';
 import 'package:alter/core/result.dart';
+import 'package:alter/feature/profile/model/profile_request_model.dart';
 import 'package:alter/feature/profile/model/profile_response_model.dart';
 import 'package:alter/feature/profile/service/profile_api.dart';
 import 'package:dio/dio.dart';
@@ -50,7 +51,7 @@ class ProfileRepository {
   }
 
   // 자격 정보 등록
-  Future<Result> addCertificate(String auth, Certificate body) async {
+  Future<Result> addCertificate(String auth, CertificateRequest body) async {
     try {
       final response = await _profileApi.addCertificate("Bearer $auth", body);
 
@@ -68,14 +69,11 @@ class ProfileRepository {
   }
 
   // 자격 정보 상세
-  Future<Result<Certificate>> getCertificateDetail(
-    String auth,
-    int certificateId,
-  ) async {
+  Future<Result<Certificate>> getCertificateDetail(String auth, int id) async {
     try {
       final response = await _profileApi.getCertificateDetail(
         "Bearer $auth",
-        certificateId,
+        id,
       );
 
       return Result.success(response.data);
@@ -94,13 +92,13 @@ class ProfileRepository {
   // 자격 정보 수정
   Future<Result> updateCertificate(
     String auth,
-    int certificateId,
-    Certificate body,
+    int id,
+    CertificateRequest body,
   ) async {
     try {
       final response = await _profileApi.updateCertificate(
         "Bearer $auth",
-        certificateId,
+        id,
         body,
       );
 
@@ -118,12 +116,9 @@ class ProfileRepository {
   }
 
   // 자격 정보 삭제
-  Future<Result> deleteCertificate(String auth, int certificateId) async {
+  Future<Result> deleteCertificate(String auth, int id) async {
     try {
-      final response = await _profileApi.deleteCertificate(
-        "Bearer $auth",
-        certificateId,
-      );
+      final response = await _profileApi.deleteCertificate("Bearer $auth", id);
 
       return Result.success(response);
     } on DioException catch (e) {

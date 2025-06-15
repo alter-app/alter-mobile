@@ -1,5 +1,6 @@
 import 'package:alter/core/api_response.dart';
 import 'package:alter/core/network_provider.dart';
+import 'package:alter/feature/profile/model/profile_request_model.dart';
 import 'package:alter/feature/profile/model/profile_response_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,7 +32,7 @@ abstract class ProfileApiClient {
   @POST('/app/users/me/certificates')
   Future<ApiResponse> addCertificate(
     @Header('Authorization') String auth,
-    @Body() Certificate body,
+    @Body() CertificateRequest body,
   );
 
   // 자격 정보 상세
@@ -46,7 +47,7 @@ abstract class ProfileApiClient {
   Future<ApiResponse> updateCertificate(
     @Header('Authorization') String auth,
     @Path('certificateId') int certificateId,
-    @Body() Certificate body,
+    @Body() CertificateRequest body,
   );
 
   // 자격 정보 삭제

@@ -1,5 +1,6 @@
 import 'package:alter/common/theme/app_theme.dart';
 import 'package:alter/feature/auth/view_model/login_view_model.dart';
+import 'package:alter/feature/profile/view/certificate_view.dart';
 import 'package:alter/feature/profile/view/scrap_view.dart';
 import 'package:alter/feature/profile/view_model/my_scrap_view_model.dart';
 import 'package:flutter/material.dart';
@@ -68,14 +69,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
             child: Row(
               children: [
-                CircleAvatar(
-                  radius: 40,
-                  child: SvgPicture.asset(
-                    'assets/icons/userIcon.svg',
-                    width: 80,
-                    height: 80,
-                  ),
-                ),
+                Image.asset('assets/icons/userIcon.png', width: 80, height: 80),
                 const Gap(16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,7 +105,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [const ScrapListView(), const Text('자격')],
+              children: [const ScrapListView(), const CertificateView()],
             ),
           ),
         ],
