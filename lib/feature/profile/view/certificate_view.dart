@@ -306,13 +306,20 @@ class _CertificateViewState extends ConsumerState<CertificateView> {
                             ),
                           ),
                         ),
-                        // --- 확장된 경우에만 수정 폼 표시 ---
-                        if (isExpanded)
-                          _buildEditCertificateForm(
+                        AnimatedCrossFade(
+                          firstChild: _buildEditCertificateForm(
                             context,
                             certificateViewModel,
                             certificate,
                           ),
+                          secondChild: const SizedBox.shrink(),
+                          crossFadeState:
+                              isExpanded
+                                  ? CrossFadeState.showFirst
+                                  : CrossFadeState.showSecond,
+                          duration: const Duration(milliseconds: 1000),
+                          sizeCurve: Curves.easeInOut,
+                        ),
                       ],
                     );
                   },
@@ -490,7 +497,7 @@ class _CertificateViewState extends ConsumerState<CertificateView> {
   Widget _buildEditCertificateForm(
     BuildContext context,
     CertificateViewModel viewModel,
-    Certificate certificate, // CertificateResponse 객체 대신 Certificate 객체 사용
+    Certificate certificate,
   ) {
     final GlobalKey<FormState> editFormKey = GlobalKey<FormState>();
     final TextEditingController nameController = TextEditingController(
