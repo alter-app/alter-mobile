@@ -49,7 +49,9 @@ class PostingListViewModel extends Notifier<PostingListState> {
   }
 
   Future<void> _fetchInitial() async {
-    state = state.copyWith(postings: const AsyncValue.loading());
+    if (state.postings.value == null || state.postings.hasError) {
+      state = state.copyWith(postings: const AsyncValue.loading());
+    }
     final postingsAsync = await AsyncValue.guard(() async {
       final token = _accessToken;
       Log.d("accessToken: $token");

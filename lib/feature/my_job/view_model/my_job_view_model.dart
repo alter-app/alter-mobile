@@ -49,7 +49,9 @@ class MyJobListViewModel extends Notifier<MyJobListState> {
   Future<void> _fetchInitial() async {
     Log.d("state: ${state.toString()}");
     if (state.page > state.totalPage) return;
-    state = state.copyWith(applications: const AsyncValue.loading());
+    if (state.applications.value == null || state.applications.hasError) {
+      state = state.copyWith(applications: const AsyncValue.loading());
+    }
 
     final applicationsAsync = await AsyncValue.guard(() async {
       final token = _accessToken;
