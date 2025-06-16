@@ -45,7 +45,7 @@ class AppShell extends StatelessWidget {
             label: '내 알바',
           ),
           BottomNavigationBarItem(icon: Icon(Icons.chat_bubble), label: '채팅'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: '마이페이지'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: '프로필'),
         ],
       ),
     );

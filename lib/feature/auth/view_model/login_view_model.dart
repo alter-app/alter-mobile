@@ -3,6 +3,8 @@ import 'package:alter/core/result.dart';
 import 'package:alter/core/secure_storage_provider.dart';
 import 'package:alter/feature/auth/repository/auth_repository.dart';
 import 'package:alter/feature/auth/model/login_response_model.dart';
+import 'package:alter/feature/profile/model/profile_response_model.dart';
+import 'package:alter/feature/profile/repository/profile_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -26,6 +28,7 @@ abstract class LoginState with _$LoginState {
   const factory LoginState({
     required LoginStatus status,
     ServiceToken? token,
+    UserProfile? profile,
     SignupRequiredData? signupData,
     String? message,
   }) = _LoginState;
@@ -35,6 +38,8 @@ abstract class LoginState with _$LoginState {
 
 class LoginViewModel extends Notifier<LoginState> {
   AuthRepository get _repository => ref.watch(authRepositoryProvider);
+  ProfileRepository get _profileRepository =>
+      ref.watch(profileRepositoryProvider);
   SecureStorage get _storage => ref.watch(secureStorageProvider);
 
   @override
@@ -55,6 +60,7 @@ class LoginViewModel extends Notifier<LoginState> {
         );
         _storage.saveToken(token.accessToken, token.refreshToken);
         state = state.copyWith(status: LoginStatus.success, token: token);
+        await getProfile();
 
       case Process(error: final error):
         final res = error.response!;
@@ -83,6 +89,21 @@ class LoginViewModel extends Notifier<LoginState> {
       case Failure(error: final error):
         Log.d("실패: ${error.toString()}");
         state = state.copyWith(status: LoginStatus.fail, message: "로그인 실패");
+    }
+  }
+
+  Future<void> getProfile() async {
+    final token = state.token?.accessToken;
+    if (token == null) {
+      Log.e("getProfile: Token is Null");
+      return;
+    }
+
+    final result = await _profileRepository.getProfile(token);
+
+    switch (result) {
+      case Success(data: final data):
+        state = state.copyWith(profile: data);
     }
   }
 }

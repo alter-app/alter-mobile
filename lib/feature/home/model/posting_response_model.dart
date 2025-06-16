@@ -15,6 +15,17 @@ abstract class PostingResponse with _$PostingResponse {
 }
 
 @freezed
+abstract class ScrapResponse with _$ScrapResponse {
+  const factory ScrapResponse({
+    required PageInfo page,
+    required List<Scrap> data,
+  }) = _ScrapResponse;
+
+  factory ScrapResponse.fromJson(Map<String, dynamic> json) =>
+      _$ScrapResponseFromJson(json);
+}
+
+@freezed
 abstract class PageInfo with _$PageInfo {
   const factory PageInfo({
     required String? cursor,
@@ -24,6 +35,30 @@ abstract class PageInfo with _$PageInfo {
 
   factory PageInfo.fromJson(Map<String, dynamic> json) =>
       _$PageInfoFromJson(json);
+}
+
+@freezed
+abstract class Scrap with _$Scrap {
+  const factory Scrap({
+    required int id,
+    required PostingSummary posting,
+    required DateTime createdAt,
+  }) = _Scrap;
+
+  factory Scrap.fromJson(Map<String, dynamic> json) => _$ScrapFromJson(json);
+}
+
+@freezed
+abstract class PostingSummary with _$PostingSummary {
+  const factory PostingSummary({
+    required int id,
+    required String businessName,
+    required String title,
+    required String paymentType,
+    required int payAmount,
+  }) = _PostingSummary;
+  factory PostingSummary.fromJson(Map<String, dynamic> json) =>
+      _$PostingSummaryFromJson(json);
 }
 
 @freezed

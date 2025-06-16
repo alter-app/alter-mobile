@@ -65,14 +65,14 @@ class _MyJobPageState extends ConsumerState<MyJobPage> {
         title: Text("내 알바", style: Theme.of(context).textTheme.titleMedium),
         centerTitle: false,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.push("/create-posting");
-        },
-        backgroundColor: AppColor.primary,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
-        child: SvgPicture.asset('assets/icons/edit.svg', width: 36, height: 36),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     context.push("/create-posting");
+      //   },
+      //   backgroundColor: AppColor.primary,
+      //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+      //   child: SvgPicture.asset('assets/icons/edit.svg', width: 36, height: 36),
+      // ),
       body: SafeArea(
         child: Column(
           children: [

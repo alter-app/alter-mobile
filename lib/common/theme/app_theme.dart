@@ -137,6 +137,18 @@ class AppTheme {
         color: AppColor.text,
       ),
     ),
+    tabBarTheme: const TabBarTheme(
+      indicatorColor: AppColor.primary,
+      labelColor: AppColor.primary,
+      unselectedLabelColor: AppColor.gray,
+      labelStyle: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
+        height: 1.5,
+        letterSpacing: -1.0,
+      ),
+      indicatorSize: TabBarIndicatorSize.tab,
+    ),
   );
 
   static final TextTheme _textTheme = const TextTheme(
