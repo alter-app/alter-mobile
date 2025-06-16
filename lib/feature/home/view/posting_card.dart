@@ -22,7 +22,6 @@ class JobPostCard extends ConsumerWidget {
       children: [
         Container(
           color: AppColor.white,
-          height: 288,
           width: double.infinity,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
@@ -160,25 +159,25 @@ class JobPostCard extends ConsumerWidget {
                       // ),
                     ],
                   ),
-                  const Gap(15),
-                  Row(
-                    children: [
-                      Flexible(
-                        flex: 1,
-                        child: Container(color: AppColor.gray, height: 142),
-                      ),
-                      const Gap(4),
-                      Flexible(
-                        flex: 1,
-                        child: Container(color: AppColor.gray, height: 142),
-                      ),
-                      const Gap(4),
-                      Flexible(
-                        flex: 1,
-                        child: Container(color: AppColor.gray, height: 142),
-                      ),
-                    ],
-                  ),
+                  // const Gap(15),
+                  // Row(
+                  //   children: [
+                  //     Flexible(
+                  //       flex: 1,
+                  //       child: Container(color: AppColor.gray, height: 142),
+                  //     ),
+                  //     const Gap(4),
+                  //     Flexible(
+                  //       flex: 1,
+                  //       child: Container(color: AppColor.gray, height: 142),
+                  //     ),
+                  //     const Gap(4),
+                  //     Flexible(
+                  //       flex: 1,
+                  //       child: Container(color: AppColor.gray, height: 142),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),

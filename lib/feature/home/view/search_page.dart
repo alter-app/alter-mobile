@@ -99,16 +99,16 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               ),
 
               // 주소 표시 컨테이너 (기존 디자인 유지)
-              Container(
-                height: 66,
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "서울 구로구 경인로 445",
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleMedium!.copyWith(height: 1.42),
-                ),
-              ),
+              // Container(
+              //   height: 66,
+              //   alignment: Alignment.centerLeft,
+              //   child: Text(
+              //     "서울 구로구 경인로 445",
+              //     style: Theme.of(
+              //       context,
+              //     ).textTheme.titleMedium!.copyWith(height: 1.42),
+              //   ),
+              // ),
 
               // 메인 리스트 영역 - AsyncValue로 처리
               Expanded(

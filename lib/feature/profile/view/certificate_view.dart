@@ -275,14 +275,33 @@ class _CertificateViewState extends ConsumerState<CertificateView> {
                                                         () => Navigator.of(
                                                           context,
                                                         ).pop(false),
-                                                    child: const Text('취소'),
+                                                    child: Text(
+                                                      '취소',
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyMedium!
+                                                          .copyWith(
+                                                            color:
+                                                                AppColor.gray,
+                                                          ),
+                                                    ),
                                                   ),
                                                   TextButton(
                                                     onPressed:
                                                         () => Navigator.of(
                                                           context,
                                                         ).pop(true),
-                                                    child: const Text('삭제'),
+                                                    child: Text(
+                                                      '삭제',
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyMedium!
+                                                          .copyWith(
+                                                            color:
+                                                                AppColor
+                                                                    .warning,
+                                                          ),
+                                                    ),
                                                   ),
                                                 ],
                                               ),
