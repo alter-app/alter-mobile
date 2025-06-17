@@ -22,6 +22,11 @@ abstract class AuthApiClient {
     @Body() LoginRequest body,
   );
 
+  @POST("/public/managers/login")
+  Future<HttpResponse<ApiResponse<LoginResponse>>> managerLogin(
+    @Body() LoginRequest body,
+  );
+
   @POST("/public/users/exists/nickname")
   Future<HttpResponse> checkNickname(@Body() NicknameCheckRequest body);
 

@@ -1,6 +1,7 @@
 import 'package:alter/common/util/logger.dart';
 import 'package:alter/core/result.dart';
 import 'package:alter/core/secure_storage_provider.dart';
+import 'package:alter/feature/auth/model/auth_model.dart';
 import 'package:alter/feature/auth/model/login_response_model.dart';
 import 'package:alter/feature/auth/model/signup_request_model.dart';
 import 'package:alter/feature/auth/repository/auth_repository.dart';
@@ -10,8 +11,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'sign_up_view_model.freezed.dart';
-
-// initial,
 
 @freezed
 abstract class SignupState with _$SignupState {

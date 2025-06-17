@@ -1,6 +1,7 @@
 import 'package:alter/common/theme/app_theme.dart';
 import 'package:alter/feature/auth/view_model/login_view_model.dart';
 import 'package:alter/feature/auth/view_model/sign_up_view_model.dart';
+import 'package:alter/feature/auth/model/auth_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';

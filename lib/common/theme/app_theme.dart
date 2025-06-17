@@ -142,7 +142,13 @@ class AppTheme {
       labelColor: AppColor.primary,
       unselectedLabelColor: AppColor.gray,
       labelStyle: TextStyle(
-        fontSize: 18,
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        height: 1.5,
+        letterSpacing: -1.0,
+      ),
+      unselectedLabelStyle: TextStyle(
+        fontSize: 16,
         fontWeight: FontWeight.w600,
         height: 1.5,
         letterSpacing: -1.0,

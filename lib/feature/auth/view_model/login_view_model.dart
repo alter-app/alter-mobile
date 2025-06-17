@@ -1,6 +1,7 @@
 import 'package:alter/common/util/logger.dart';
 import 'package:alter/core/result.dart';
 import 'package:alter/core/secure_storage_provider.dart';
+import 'package:alter/feature/auth/model/auth_model.dart';
 import 'package:alter/feature/auth/repository/auth_repository.dart';
 import 'package:alter/feature/auth/model/login_response_model.dart';
 import 'package:alter/feature/profile/model/profile_response_model.dart';
@@ -14,19 +15,11 @@ final loginViewModelProvider = NotifierProvider<LoginViewModel, LoginState>(
   () => LoginViewModel(),
 );
 
-enum LoginStatus {
-  initial,
-  loading,
-  success,
-  signupRequired,
-  tokenExpired,
-  fail,
-}
-
 @freezed
 abstract class LoginState with _$LoginState {
   const factory LoginState({
     required LoginStatus status,
+    @Default(Role.guest) Role role,
     ServiceToken? token,
     UserProfile? profile,
     SignupRequiredData? signupData,
@@ -47,10 +40,22 @@ class LoginViewModel extends Notifier<LoginState> {
     return const LoginState(status: LoginStatus.initial);
   }
 
-  Future<void> loginWithKakao() async {
+  Future<void> login(SocialDomain domain) async {
+    await _handleSocialLogin(domain, Role.user);
+  }
+
+  Future<void> managerLogin(SocialDomain domain) async {
+    await _handleSocialLogin(domain, Role.manager);
+  }
+
+  Future<void> _handleSocialLogin(SocialDomain domain, Role role) async {
     state = state.copyWith(status: LoginStatus.loading);
 
-    final result = await _repository.kakaoLogin();
+    final result = switch (domain) {
+      SocialDomain.kakao => await _repository.kakaoLogin(role),
+      SocialDomain.apple => throw UnimplementedError(),
+    };
+
     switch (result) {
       case Success(data: final data):
         Log.d("성공: $data");
@@ -58,8 +63,12 @@ class LoginViewModel extends Notifier<LoginState> {
           accessToken: data.accessToken,
           refreshToken: data.refreshToken,
         );
-        _storage.saveToken(token.accessToken, token.refreshToken);
-        state = state.copyWith(status: LoginStatus.success, token: token);
+        await _storage.saveToken(token.accessToken, token.refreshToken);
+        state = state.copyWith(
+          status: LoginStatus.success,
+          token: token,
+          role: role,
+        );
         await getProfile();
 
       case Process(error: final error):

@@ -1,5 +1,6 @@
 import 'package:alter/common/util/logger.dart';
 import 'package:alter/core/result.dart';
+import 'package:alter/feature/auth/model/auth_model.dart';
 import 'package:alter/feature/auth/model/login_request_model.dart';
 import 'package:alter/feature/auth/model/login_response_model.dart';
 import 'package:alter/feature/auth/model/signup_request_model.dart';
@@ -18,20 +19,23 @@ class AuthRepository {
 
   AuthRepository(this.authApi);
 
-  Future<Result<LoginResponse>> kakaoLogin() async {
+  Future<Result<LoginResponse>> kakaoLogin(Role role) async {
     final kakaoToken = await _kakaoLoginAuthenticate();
     if (kakaoToken == null) {
-      return Result.failure(Exception("로그인 실패"));
+      return Result.failure(Exception("카카오 로그인 실패"));
     }
     final accessToken = kakaoToken.accessToken;
+    final body = LoginRequest(
+      provider: "KAKAO",
+      accessToken: accessToken,
+      authorizationCode: "",
+    );
     try {
-      final httpResponse = await authApi.login(
-        LoginRequest(
-          provider: "KAKAO",
-          accessToken: accessToken,
-          authorizationCode: "",
-        ),
-      );
+      final httpResponse = switch (role) {
+        Role.user || Role.guest => await authApi.login(body),
+        Role.manager => await authApi.managerLogin(body),
+      };
+
       final status = httpResponse.response.statusCode;
       final response = httpResponse.data;
       Log.d("[$status] response: $response");
