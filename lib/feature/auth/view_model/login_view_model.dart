@@ -53,7 +53,7 @@ class LoginViewModel extends Notifier<LoginState> {
 
     final result = switch (domain) {
       SocialDomain.kakao => await _repository.kakaoLogin(role),
-      SocialDomain.apple => throw UnimplementedError(),
+      SocialDomain.apple => await _repository.appleLogin(role),
     };
 
     switch (result) {

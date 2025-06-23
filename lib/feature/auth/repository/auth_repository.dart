@@ -9,6 +9,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 final authRepositoryProvider = Provider(
   (ref) => AuthRepository(ref.watch(authApiProvider)),
@@ -25,10 +26,13 @@ class AuthRepository {
       return Result.failure(Exception("카카오 로그인 실패"));
     }
     final accessToken = kakaoToken.accessToken;
+    final refreshToken = kakaoToken.refreshToken;
     final body = LoginRequest(
       provider: "KAKAO",
-      accessToken: accessToken,
-      authorizationCode: "",
+      oauthToken: ServiceToken(
+        accessToken: accessToken,
+        refreshToken: refreshToken ?? "",
+      ),
     );
     try {
       final httpResponse = switch (role) {
@@ -56,6 +60,47 @@ class AuthRepository {
       Log.e("Kakao login API failed: $e");
       return Result.failure(Exception("Kakao login API failed"));
     }
+  }
+
+  Future<Result<LoginResponse>> appleLogin(Role role) async {
+    final authCode = await _appleAuthenticate();
+    final body = LoginRequest(provider: "APPLE", authorizationCode: authCode);
+    try {
+      final httpResponse = switch (role) {
+        Role.user || Role.guest => await authApi.login(body),
+        Role.manager => await authApi.managerLogin(body),
+      };
+
+      final status = httpResponse.response.statusCode;
+      final response = httpResponse.data;
+      Log.d("[$status] response: $response");
+
+      return Result.success(response.data);
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.badResponse) {
+        final status = e.response?.statusCode;
+        final errorResponse = e.response?.data;
+        Log.e("[$status] error: $errorResponse");
+
+        return Result.process(e);
+      } else {
+        // TODO 연결 시간 초과 등 다른 오류 추후 커스텀 예외 처리 필요
+        return Result.failure(Exception("Kakao login API failed"));
+      }
+    } catch (e) {
+      Log.e("Kakao login API failed: $e");
+      return Result.failure(Exception("Kakao login API failed"));
+    }
+  }
+
+  Future<String> _appleAuthenticate() async {
+    final credential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+    );
+    return credential.authorizationCode;
   }
 
   Future<OAuthToken?> _kakaoLoginAuthenticate() async {
@@ -90,7 +135,7 @@ class AuthRepository {
       try {
         oAuthToken = await UserApi.instance.loginWithKakaoAccount();
         Log.d(
-          "kakaoAccount login accessToken: ${oAuthToken.accessToken.toString()}",
+          "kakaoAccount login accessToken: ${oAuthToken.accessToken.toString()} refresh : ${oAuthToken.refreshToken.toString()}",
         );
       } catch (e) {
         Log.e("kakaoAccount login failed: $e");

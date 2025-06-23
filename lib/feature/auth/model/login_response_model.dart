@@ -43,9 +43,13 @@ abstract class SignupRequiredData with _$SignupRequiredData {
       _$SignupRequiredDataFromJson(json);
 }
 
-class ServiceToken {
-  final String accessToken;
-  final String refreshToken;
+@freezed
+abstract class ServiceToken with _$ServiceToken {
+  const factory ServiceToken({
+    required String accessToken,
+    required String refreshToken,
+  }) = _ServiceToken;
 
-  ServiceToken({required this.accessToken, required this.refreshToken});
+  factory ServiceToken.fromJson(Map<String, dynamic> json) =>
+      _$ServiceTokenFromJson(json);
 }
